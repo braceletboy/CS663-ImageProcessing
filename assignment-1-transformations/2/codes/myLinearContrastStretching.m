@@ -2,7 +2,7 @@ function contrast_stretched_img = myLinearContrastStretching(image)
 %% Perform Linear Contrast Stretching over the given image
 %
 % SYNTAX:
-%   myLinearContrastStretching(image);
+%   contrast_stretched_img = myLinearContrastStretching(image);
 %
 % INPUT:
 %   image_path = The input image path
@@ -26,6 +26,9 @@ elseif length(size(image))==3
     red_channel = image(:,:,1);
     blue_channel = image(:,:,2);
     green_channel = image(:,:,3);
+    image(:,:,1) = image(:,:,1)/255;
+    image(:,:,2) = image(:,:,2)/255;
+    image(:,:,3) = image(:,:,3)/255;
     red_min = min(min(red_channel));
     red_max = max(max(red_channel));
     blue_min = min(min(blue_channel));
@@ -40,7 +43,7 @@ elseif length(size(image))==3
     contrast_stretched_img(:,:,2) = blue_channel;
     contrast_stretched_img(:,:,3) = green_channel;
     figure;
-    subplot(1,2,1), imshow(uint8(image));
+    subplot(1,2,1), imshow(image);
     colorbar;
     subplot(1,2,2), imshow(contrast_stretched_img);
     colorbar;

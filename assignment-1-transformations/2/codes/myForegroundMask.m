@@ -2,7 +2,7 @@ function [mask, masked_img] = myForegroundMask(threshold)
 %% Calculate the Foreground Mask of the 2/data/statue.png image
 %
 % SYNTAX:
-%   myForegroundMask(threshold)
+%   [mask, masked_img] = myForegroundMask(threshold)
 %
 % INPUT:
 %   threshold = The threshold for considering a pixel as background
