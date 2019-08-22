@@ -14,45 +14,45 @@ threshold = 15;
 %   intensity, there will be no contrast stretching happening. This can be
 %   disadvantageous when we have very few pixel at the extremes of the
 %   intensity range - as is the case with the church image.
-[image] = imread("../data/barbara.png");
+[image] = imread('../data/barbara.png');
 [~] = myLinearContrastStretching(image);
-[image] = imread("../data/TEM.png");
+[image] = imread('../data/TEM.png');
 [~] = myLinearContrastStretching(image);
-[image] = imread("../data/canyon.png");
+[image] = imread('../data/canyon.png');
 [~] = myLinearContrastStretching(image);
-[image] = imread("../data/church.png");
+[image] = imread('../data/church.png');
 [~] = myLinearContrastStretching(image);
-[image] = imread("../data/chestXray.png");
+[image] = imread('../data/chestXray.png');
 [~] = myLinearContrastStretching(image);
-statue_img = imread("../data/statue.png");
+statue_img = imread('../data/statue.png');
 threshold = 15;
 mask = (statue_img>threshold);
 masked_img = statue_img.*uint8(mask);
 [~] = myLinearContrastStretching(masked_img);
 %% Part-(c) Histogram Equalization
 %   The histogram equalization method used here works better than the
-%   linear contrast stretching for the "../data/church.png" image because
+%   linear contrast stretching for the '../data/church.png' image because
 %   the histogram equalization method can also perfrom non-linear contrast
 %   stretching suitable for the image.
-[image] = imread("../data/barbara.png");
+[image] = imread('../data/barbara.png');
 [~] = myHE(image);
-[image] = imread("../data/TEM.png");
+[image] = imread('../data/TEM.png');
 [~] = myHE(image);
-[image] = imread("../data/canyon.png");
+[image] = imread('../data/canyon.png');
 [~] = myHE(image);
-[image] = imread("../data/church.png");
+[image] = imread('../data/church.png');
 [~] = myHE(image);
-[image] = imread("../data/chestXray.png");
+[image] = imread('../data/chestXray.png');
 [~] = myHE(image);
-statue_img = imread("../data/statue.png");
+statue_img = imread('../data/statue.png');
 threshold = 15;
 mask = (statue_img>threshold);
 masked_img = statue_img.*uint8(mask);
 [~] = myHE(masked_img);
 %% Part-(d) Histogram Matching
 %
-[image] = imread("../data/retina.png");
-[ref_image] = imread("../data/retinaRef.png");
+[image] = imread('../data/retina.png');
+[ref_image] = imread('../data/retinaRef.png');
 matched_image = myHM(image, ref_image);
 %% Part-(e) Contrast-Limited Adaptive Histogram Equalization (CLAHE)
 
