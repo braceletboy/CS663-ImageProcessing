@@ -32,8 +32,7 @@ masked_img = statue_img.*uint8(mask);
 %% Part-(c) Histogram Equalization
 %   The histogram equalization method used here works better than the
 %   linear contrast stretching for the "../data/church.png" image because
-%   the histogram equalization method can also perfrom non-linear contrast
-%   stretching suitable for the image.
+%   the histogram eq
 [image] = imread("../data/barbara.png");
 [~] = myHE(image);
 [image] = imread("../data/TEM.png");
