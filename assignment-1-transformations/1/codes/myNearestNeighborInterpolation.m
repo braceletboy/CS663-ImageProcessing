@@ -43,8 +43,10 @@ for i = 1:3*num_rows-2
 end
 
 figure;
-subplot(1,2,1), imshow(image);
+pixel_index = imref2d(size(image));
+subplot(1,2,1), imshow(image,pixel_index);
 colorbar;
-subplot(1,2,2), imshow(enlarged_image);
+pixel_index = imref2d(size(enlarged_image));
+subplot(1,2,2), imshow(enlarged_image,pixel_index);
 colorbar;
 end
