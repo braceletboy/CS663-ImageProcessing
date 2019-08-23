@@ -13,22 +13,21 @@ function matched_img = myHM(img, ref_img)
 %   Matching on it.
 %%
 %
-hsv_img = rgb2hsv(img);
-intensity_channel = hsv_img(:,:,3);
-ref_hsv_img = rgb2hsv(ref_img);
-ref_intensity_channel = ref_hsv_img(:,:,3);
-matched_hsv_img = hsv_img;
-matched_hsv_img(:,:,3) = grayscaleHM(intensity_channel, ref_intensity_channel);
-matched_img = hsv2rgb(matched_hsv_img);
+matched_img(:,:,1) = grayscaleHM(img(:,:,1), ref_img(:,:,1));
+matched_img(:,:,2) = grayscaleHM(img(:,:,2), ref_img(:,:,2));
+matched_img(:,:,3) = grayscaleHM(img(:,:,3), ref_img(:,:,3));
 equalized_img = myHE(img);
 %equalized_img = zeros(size(img));
 close Figure 1;
 figure;
 subplot(1,3,1), imshow(img);
+title('input');
 colorbar;
 subplot(1,3,2), imshow(matched_img);
 colorbar;
+title('matched');
 subplot(1,3,3), imshow(equalized_img);
+title('Equalized');
 colorbar;
 end
 
@@ -48,14 +47,21 @@ function matched_image = grayscaleHM(image, ref_image)
 %   Matching on it.
 img_cdf = get_cdf(image);
 ref_cdf = get_cdf(ref_image);
-new_intensity = zeros(256, 1);
+new_intensity = zeros(256, 1, 'uint8');
+
 for array_index = 1 : 256
     diff_cdf = abs(ref_cdf - img_cdf(array_index));
     [~, indx] = min(diff_cdf);
     new_intensity(array_index) = indx;
 end
-matched_image = image;
-for intensity = 0:255
-    matched_image(matched_image==intensity)=new_intensity(intensity+1);
-end
+matched_image = new_intensity(image+1);
+%     figure;
+%     plot(ref_cdf);
+%     title('ref_cdf');
+%     figure;
+%     plot(get_cdf(matched_image));
+%     title('matched_cdf');
+%     figure;
+%     plot(img_cdf);
+%     title('inp_cdf');
 end
