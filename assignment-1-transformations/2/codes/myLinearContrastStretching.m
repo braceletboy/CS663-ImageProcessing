@@ -44,8 +44,10 @@ elseif length(size(image))==3
     contrast_stretched_img(:,:,3) = green_channel;
     figure;
     subplot(1,2,1), imshow(image);
+    title('Original');
     colorbar;
     subplot(1,2,2), imshow(contrast_stretched_img);
+    title('Linear Contrast Stretched');
     colorbar;
 end
 end

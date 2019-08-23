@@ -53,7 +53,7 @@ masked_img = statue_img.*uint8(mask);
 %
 matched_image = myHM();
 %% Part-(e) Contrast-Limited Adaptive Histogram Equalization (CLAHE)
-clc;
+%% Part-(e - (i)) Original and CLAHE
 [image] = imread('../data/barbara.png');
 [~] = myCLAHE(image, 225, 0.4);
 [image] = imread('../data/TEM.png');
@@ -62,5 +62,35 @@ clc;
 [~] = myCLAHE(image, 130, 0.7);
 [image] = imread('../data/chestXray.png');
 [~] = myCLAHE(image, 180, 0.8);
+%% Part-(e - (ii)) Original and CLAHE (Larger Window)
+%
+[image] = imread('../data/barbara.png');
+[~] = myCLAHE(image, 501, 0.4);
+[image] = imread('../data/TEM.png');
+[~] = myCLAHE(image, 501, 0.5);
+[image] = imread('../data/canyon.png');
+[~] = myCLAHE(image, 301, 0.7);
+[image] = imread('../data/chestXray.png');
+[~] = myCLAHE(image, 501, 0.8);
+%% Part-(e - (ii)) Original and CLAHE (Smaller Window)
+%
+[image] = imread('../data/barbara.png');
+[~] = myCLAHE(image, 10, 0.4);
+[image] = imread('../data/TEM.png');
+[~] = myCLAHE(image, 10, 0.5);
+[image] = imread('../data/canyon.png');
+[~] = myCLAHE(image, 10, 0.7);
+[image] = imread('../data/chestXray.png');
+[~] = myCLAHE(image, 10, 0.8);
+%% Part-(e - (iii)) Original and CLAHE (Half the Threshold)
+%
+[image] = imread('../data/barbara.png');
+[~] = myCLAHE(image, 225, 0.2);
+[image] = imread('../data/TEM.png');
+[~] = myCLAHE(image, 120, 0.25);
+[image] = imread('../data/canyon.png');
+[~] = myCLAHE(image, 130, 0.35);
+[image] = imread('../data/chestXray.png');
+[~] = myCLAHE(image, 180, 0.4);
 %%
 toc;

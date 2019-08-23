@@ -18,6 +18,12 @@ mask = (statue_img>threshold);
 masked_img = statue_img.*uint8(mask);
 figure;
 subplot(1,3,1), imshow(statue_img);
+title('Original');
+colorbar;
 subplot(1,3,2), imshow(mask);
+title('Mask');
+colorbar;
 subplot(1,3,3), imshow(masked_img);
+title('Masked Image');
+colorbar;
 end

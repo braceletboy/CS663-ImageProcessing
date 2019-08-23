@@ -15,16 +15,16 @@ matched_img(:,:,1) = grayscaleHM(img(:,:,1), ref_img(:,:,1));
 matched_img(:,:,2) = grayscaleHM(img(:,:,2), ref_img(:,:,2));
 matched_img(:,:,3) = grayscaleHM(img(:,:,3), ref_img(:,:,3));
 equalized_img = myHE(img);
-close Figure 1;
+close;
 figure;
 subplot(1,3,1), imshow(img);
-title('input');
+title('Original');
 colorbar;
 subplot(1,3,2), imshow(matched_img);
+title('HM');
 colorbar;
-title('matched');
 subplot(1,3,3), imshow(equalized_img);
-title('Equalized');
+title('HE');
 colorbar;
 end
 
