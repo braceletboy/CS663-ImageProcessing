@@ -9,6 +9,8 @@ function matched_img = myHM()
 %   Matching on it.
 %%
 %
+img = imread('../data/retina.png');
+ref_img = imread('../data/retinaRef.png');
 matched_img(:,:,1) = grayscaleHM(img(:,:,1), ref_img(:,:,1));
 matched_img(:,:,2) = grayscaleHM(img(:,:,2), ref_img(:,:,2));
 matched_img(:,:,3) = grayscaleHM(img(:,:,3), ref_img(:,:,3));
