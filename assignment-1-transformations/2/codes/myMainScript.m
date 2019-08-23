@@ -53,5 +53,13 @@ masked_img = statue_img.*uint8(mask);
 %
 matched_image = myHM();
 %% Part-(e) Contrast-Limited Adaptive Histogram Equalization (CLAHE)
-
+[image] = imread('../data/barbara.png');
+[~] = myCLAHE(image, 51, 1.0);
+[image] = imread('../data/TEM.png');
+[~] = myCLAHE(image, 51, 1.0);
+[image] = imread('../data/canyon.png');
+[~] = myCLAHE(image, 51, 1.0);
+[image] = imread('../data/chestXray.png');
+[~] = myCLAHE(image, 51, 1.0);
+%%
 toc;
