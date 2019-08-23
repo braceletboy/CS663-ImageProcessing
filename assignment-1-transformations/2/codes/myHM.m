@@ -1,12 +1,8 @@
-function matched_img = myHM(img, ref_img)
+function matched_img = myHM()
 %% Perform Histogram Matching (HM)
 %
 % SYNTAX:
-%   equalized_img = myHM(img)
-%
-% INPUT:
-%   img = The image on which GHM is to be performed
-%   ref_img = The reference image for Histogram matching
+%   equalized_img = myHM()
 %
 % OUTPUT:
 %   matched_img = The image after performing Global Histogram
@@ -17,7 +13,6 @@ matched_img(:,:,1) = grayscaleHM(img(:,:,1), ref_img(:,:,1));
 matched_img(:,:,2) = grayscaleHM(img(:,:,2), ref_img(:,:,2));
 matched_img(:,:,3) = grayscaleHM(img(:,:,3), ref_img(:,:,3));
 equalized_img = myHE(img);
-%equalized_img = zeros(size(img));
 close Figure 1;
 figure;
 subplot(1,3,1), imshow(img);
@@ -55,13 +50,4 @@ for array_index = 1 : 256
     new_intensity(array_index) = indx;
 end
 matched_image = new_intensity(image+1);
-%     figure;
-%     plot(ref_cdf);
-%     title('ref_cdf');
-%     figure;
-%     plot(get_cdf(matched_image));
-%     title('matched_cdf');
-%     figure;
-%     plot(img_cdf);
-%     title('inp_cdf');
 end

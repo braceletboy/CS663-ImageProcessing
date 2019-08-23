@@ -51,9 +51,7 @@ masked_img = statue_img.*uint8(mask);
 [~] = myHE(masked_img);
 %% Part-(d) Histogram Matching
 %
-[image] = imread('../data/retina.png');
-[ref_image] = imread('../data/retinaRef.png');
-matched_image = myHM(image, ref_image);
+matched_image = myHM();
 %% Part-(e) Contrast-Limited Adaptive Histogram Equalization (CLAHE)
 
 toc;
