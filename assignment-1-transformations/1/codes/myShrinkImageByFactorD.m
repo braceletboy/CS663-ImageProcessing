@@ -18,8 +18,10 @@ shrunken_image = image(shrink_factor:shrink_factor:end, ...
 figure('Name', 'Original vs Shrunken');
 pixel_index = imref2d(size(image));
 subplot(1,2,1), imshow(image,pixel_index);
+title('Original');
 colorbar;
 pixel_index = imref2d(size(shrunken_image));
 subplot(1,2,2), imshow(shrunken_image,pixel_index);
+title('Shrunken');
 colorbar;
 end
