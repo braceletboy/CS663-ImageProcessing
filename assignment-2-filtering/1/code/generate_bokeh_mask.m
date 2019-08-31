@@ -24,14 +24,14 @@ function mask = generate_bokeh_mask(img)
 %%
 %
 gray_img = rgb2gray(img);
-preliminary_mask = edge(img, 'roberts');
-mask = activecontour(gray_img, preliminary_mask, 'Chan-Vese', ...
-    'ContractionBias', -0.45);
+preliminary_mask = edge(gray_img, 'roberts');
+mask = activecontour(img, preliminary_mask, 'Chan-Vese', ...
+    'ContractionBias', -0.43);
 inverted_mask = (1 - mask);
 foreground_img = bsxfun(@times, img, cast(mask, 'like', img));
 background_img = bsxfun(@times, img, cast(inverted_mask, 'like', img));
 figure;
-sgtitle('Part (c) - Mask and Masked images');
+sgtitle('Part (c) - (i) Mask and Masked images');
 subplot(1,3,1), imshow(mask);
 title('Mask');
 colorbar;

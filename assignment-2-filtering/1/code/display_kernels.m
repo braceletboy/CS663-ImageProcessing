@@ -18,7 +18,7 @@ filter3 = fspecial('disk', 0.6*thresh_dist);
 filter4 = fspecial('disk', 0.8*thresh_dist);
 filter5 = fspecial('disk', 1*thresh_dist);
 figure;
-sgtitle('Part (c) - Kernels');
+sgtitle('Part (c) - (iii) Kernels');
 subplot(1,5,1), imshow(filter1, [0 max(max(filter1))]);
 title('Kernel - 0.2*thresh');
 colorbar;
