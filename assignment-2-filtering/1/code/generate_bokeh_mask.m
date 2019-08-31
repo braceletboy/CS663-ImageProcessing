@@ -26,7 +26,7 @@ function mask = generate_bokeh_mask(img)
 gray_img = rgb2gray(img);
 preliminary_mask = edge(img, 'roberts');
 mask = activecontour(gray_img, preliminary_mask, 'Chan-Vese', ...
-    'ContractionBias', -0.3);
+    'ContractionBias', -0.45);
 inverted_mask = (1 - mask);
 foreground_img = bsxfun(@times, img, cast(mask, 'like', img));
 background_img = bsxfun(@times, img, cast(inverted_mask, 'like', img));
