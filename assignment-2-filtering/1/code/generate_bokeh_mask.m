@@ -1,0 +1,42 @@
+function mask = generate_bokeh_mask(img)
+%% Generate Bokeh Mask for the given image using segmentation
+%   This method first calculates an edge image and then uses it as the 
+%   preliminary mask for the Chan-Vese method. This method gives us the
+%   final mask.
+%
+% NOTE:
+%   The 'Roberts' filter seems to work best for our purpose, while finding
+%   the edges.
+%
+% SYNTAX:
+%   mask = generate_bokeh_mask(img);
+%
+% INPUT:
+%   img = The image for which bokeh is mask is to be generated
+%   patch_size = The patch size to be used for the preliminary mask
+%   generation
+%
+% OUTPUT:
+%   mask = The generated mask
+%
+% Reference1: [https://in.mathworks.com/help/images/ref/activecontour.html]
+% Reference2: [https://in.mathworks.com/help/images/ref/edge.html]
+%%
+%
+gray_img = rgb2gray(img);
+preliminary_mask = edge(gray_img, 'roberts');
+mask = activecontour(img, preliminary_mask, 'Chan-Vese', ...
+    'ContractionBias', -0.3);
+inverted_mask = (1 - mask);
+figure;
+sgtitle('Part (c) - Mask and Inverted Masks');
+subplot(1,3,1), imshow(img);
+title('Original');
+colorbar;
+subplot(1,3,2), imshow(mask);
+title('Mask');
+colorbar;
+subplot(1,3,3), imshow(inverted_mask);
+title('Inverted Mask');
+colorbar;
+end
