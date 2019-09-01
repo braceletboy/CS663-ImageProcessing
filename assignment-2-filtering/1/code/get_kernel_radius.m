@@ -14,7 +14,7 @@ function kr_img = get_kernel_radius(mask, thresh_dist)
 %
 %%
 %
-kr_img = bwdist(mask);
+kr_img = double(bwdist(mask));
 kr_img(kr_img > thresh_dist) = thresh_dist;
 figure;
 sgtitle('Part (c) - (ii) Contour Plot');
