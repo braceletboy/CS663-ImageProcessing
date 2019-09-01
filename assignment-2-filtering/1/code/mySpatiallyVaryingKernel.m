@@ -21,7 +21,7 @@ for row = 1:num_rows
         if mask(row, column) == 0
             kernel_radius = kr_img(row, column);
             kernel = fspecial('disk', kernel_radius); % kernel(square) size is 2*r+1
-            kernel_radius = double(uint8(kernel_radius));
+            kernel_radius = double(uint64(kernel_radius));
             top_row = max(1, row-kernel_radius);
             bottom_row = min(num_rows, row+kernel_radius);
             left_column = max(1, column-kernel_radius);
