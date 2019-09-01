@@ -14,7 +14,7 @@ mask = generate_bokeh_mask(img);
 kr_img = get_kernel_radius(mask, thresh_dist);
 
 %% Displaying kernels for different distances
-display_kernels(thresh_dist);
+% display_kernels(thresh_dist);
 
 %% Blurring the Background
 [~] = mySpatiallyVaryingKernel(img, mask, kr_img);
