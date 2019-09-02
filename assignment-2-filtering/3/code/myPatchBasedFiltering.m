@@ -1,8 +1,17 @@
-function smoothed_img = myPatchBasedFiltering(img, sigma, window_size, patch_size)
+function [corrupted_img, smoothed_img] = myPatchBasedFiltering(img, sigma, window_size, patch_size)
 
-%%
+%% Apply Patch Based Filtering on the given image
 %
-img = double(img);
+% INPUT:
+%   img = The image on which patch based filtering is to be applied
+%   sigma = The sigma for the gaussian
+%   window_size = The size of the window of the neighbourhood around pixel of consideration(assumed to be odd number)
+%   patch_size = the size of the patches that are used to find similarity
+% OUTPUT:
+%   smoothed_img = The smoothed image after the filtering
+%   corrupted_img = The corrupted image used for filtering
+%
+%% Main code
 noise_sigma = 0.05 * range(img,'all');
 noise = randn(size(img))*noise_sigma;
 corrupted_img = img + noise;
@@ -30,15 +39,4 @@ for row = 1:num_rows
         smoothed_img(row, column) = sum((filter.*window), 'all');
     end
 end
-figure;
-sgtitle('Patch Based Filtering');
-subplot(1,3,1), imshow(uint8(img));
-title('Original');
-colorbar;
-subplot(1,3,2), imshow(uint8(corrupted_img));
-title('Corrupted');
-colorbar;
-subplot(1,3,3), imshow(uint8(smoothed_img));
-title('Filtered');
-colorbar;
 end

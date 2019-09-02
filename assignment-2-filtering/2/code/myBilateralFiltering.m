@@ -51,7 +51,7 @@ subplot(1,3,3), imshow(uint8(smoothed_img));
 title('Filtered');
 colorbar;
 figure;
-imshow(spatial_gaussian, [0, max(max(spatial_gaussian))]);
+imshow(spatial_gaussian, [0, max(max(spatial_gaussian))], 'InitialMagnification', 800);
 title('Mask for Spatial Gaussian');
 colorbar;
 end
