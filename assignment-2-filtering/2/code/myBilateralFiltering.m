@@ -38,7 +38,7 @@ for row = 1:num_rows
 end
 spatial_gaussian = fspecial('gaussian', window_size, spatial_sigma);
 rmsd_loss = sqrt(sum(sum((smoothed_img-img).^2))/(num_rows*num_columns));
-disp(rmsd_loss);
+fprintf('value - %.2f\n', rmsd_loss);
 figure;
 sgtitle('Bilateral Filtering');
 subplot(1,3,1), imshow(uint8(img));
