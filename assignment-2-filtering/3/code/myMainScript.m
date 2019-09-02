@@ -10,11 +10,11 @@ img2 = "../data/grass.png";
 img3 = "../data/honeyCombReal.png";
 window_size = 25;
 patch_size = 9;
-sigma_opt_arr = [25, 88, 90];
+sigma_opt_arr = [37, 88, 90];
 %-----------------------------------------------------------------------------------------------
 %-----------------------------------------------------------------------------------------------
 
-%% Smoothening the input image1 - barbara.mat
+%% Smoothening the input image1 - Barbara.mat
 
 sigma_opt = sigma_opt_arr(1);
 img_mat = load(img1);
@@ -40,7 +40,7 @@ gaussian_mask = fspecial('gaussian', patch_size, sigma_opt);
 figure;
 colormap('gray');
 imagesc(gaussian_mask);
-title('Mask for isotropic patches');
+title('Mask for isotropic patches for Barbara');
 colorbar;
 
 %% Optimal parameter value(sigma*) and optimal RMSD
@@ -87,7 +87,7 @@ gaussian_mask = fspecial('gaussian', patch_size, sigma_opt);
 figure;
 colormap('gray');
 imagesc(gaussian_mask);
-title('Mask for isotropic patches');
+title('Mask for isotropic patches for Grass.png');
 colorbar;
 % 
 %% Optimal parameter value(sigma*) and optimal RMSD
@@ -134,7 +134,7 @@ gaussian_mask = fspecial('gaussian', patch_size, sigma_opt);
 figure;
 colormap('gray');
 imagesc(gaussian_mask);
-title('Mask for isotropic patches');
+title('Mask for isotropic patches for HoneyCombReal');
 colorbar;
 
 %% Optimal parameter value(sigma*) and optimal RMSD
