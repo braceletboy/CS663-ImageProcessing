@@ -1,4 +1,4 @@
-function smoothed_img = myBilateralFiltering(img, spatial_sigma, ...
+function [corrupted_img, smoothed_img] = myBilateralFiltering(img, spatial_sigma, ...
     intensity_sigma, window_size)
 %% Apply Bilateral Filtering on the given image
 %
@@ -36,22 +36,5 @@ for row = 1:num_rows
             sum(sum(filter));
     end
 end
-spatial_gaussian = fspecial('gaussian', window_size, spatial_sigma);
-rmsd_loss = sqrt(sum(sum((smoothed_img-img).^2))/(num_rows*num_columns));
-fprintf('value - %.2f\n', rmsd_loss);
-figure;
-sgtitle('Bilateral Filtering');
-subplot(1,3,1), imshow(uint8(img));
-title('Original');
-colorbar;
-subplot(1,3,2), imshow(uint8(corrupted_img));
-title('Corrupted');
-colorbar;
-subplot(1,3,3), imshow(uint8(smoothed_img));
-title('Filtered');
-colorbar;
-figure;
-imshow(spatial_gaussian, [0, max(max(spatial_gaussian))], 'InitialMagnification', 800);
-title('Mask for Spatial Gaussian');
-colorbar;
+
 end
