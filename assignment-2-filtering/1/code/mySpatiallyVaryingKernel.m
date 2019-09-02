@@ -34,12 +34,12 @@ for row = 1:num_rows
     end
 end
 
-figure;
+figure('Position', [80 80 1200 400]);
 sgtitle('Part (c) - (iv) Spatially varying blurring');
-subplot(1,2,1), imshow(img);
+subplot(1,2,1), imagesc(img);
 title('Original Image');
 colorbar;
-subplot(1,2,2), imshow(output_image);
+subplot(1,2,2), imagesc(output_image);
 title('Output Image');
 colorbar;
 end

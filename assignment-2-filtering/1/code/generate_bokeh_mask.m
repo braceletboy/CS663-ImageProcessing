@@ -30,15 +30,12 @@ mask = activecontour(img, preliminary_mask, 'Chan-Vese', ...
 inverted_mask = (1 - mask);
 foreground_img = bsxfun(@times, img, cast(mask, 'like', img));
 background_img = bsxfun(@times, img, cast(inverted_mask, 'like', img));
-figure;
+figure('Position', [80 80 1300 300]);
 sgtitle('Part (c) - (i) Mask and Masked images');
-subplot(1,3,1), imshow(mask);
+subplot(1,3,1), imagesc(mask), colormap('gray');
 title('Mask');
-colorbar;
-subplot(1,3,2), imshow(foreground_img);
+subplot(1,3,2), imagesc(foreground_img);
 title('Foreground');
-colorbar;
-subplot(1,3,3), imshow(background_img);
+subplot(1,3,3), imagesc(background_img);
 title('Background');
-colorbar;
 end
