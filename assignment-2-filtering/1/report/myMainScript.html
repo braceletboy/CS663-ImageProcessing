@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-09-01"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-09-02"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">1.Flower Image</a></li><li><a href="#3">Mask and Masked Images</a></li><li><a href="#4">Contour Plot of Kernel radius</a></li><li><a href="#5">Displaying kernels for different distances</a></li><li><a href="#6">Blurring the Background</a></li><li><a href="#7">1.Bird Image</a></li><li><a href="#8">Mask and Masked Images</a></li><li><a href="#9">Contour Plot of Kernel radius</a></li><li><a href="#10">Displaying kernels for different distances</a></li><li><a href="#11">Blurring the Background</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">close <span class="string">all</span>;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">1.Flower Image</a></li><li><a href="#3">Mask and Masked Images</a></li><li><a href="#4">Contour Plot of Kernel radius</a></li><li><a href="#5">Blurring the Background</a></li><li><a href="#6">Displaying kernels for different distances</a></li><li><a href="#7">2.Bird Image</a></li><li><a href="#8">Mask and Masked Images</a></li><li><a href="#9">Contour Plot of Kernel radius</a></li><li><a href="#10">Blurring the Background</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">close <span class="string">all</span>;
 clear <span class="string">all</span>;
 clc;
 tic;
@@ -74,16 +74,17 @@ tic;
 img = imread(<span class="string">'../data/flower.jpg'</span>);
 </pre><h2 id="3">Mask and Masked Images</h2><pre class="codeinput">mask = generate_bokeh_mask(img);
 </pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="4">Contour Plot of Kernel radius</h2><pre class="codeinput">kr_img = get_kernel_radius(mask, thresh_dist);
-</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2 id="5">Displaying kernels for different distances</h2><p>display_kernels(thresh_dist);</p><h2 id="6">Blurring the Background</h2><pre class="codeinput">[~] = mySpatiallyVaryingKernel(img, mask, kr_img);
-</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="7">1.Bird Image</h2><pre class="codeinput">thresh_dist = 40;
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2 id="5">Blurring the Background</h2><pre class="codeinput">[~] = mySpatiallyVaryingKernel(img, mask, kr_img);
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="6">Displaying kernels for different distances</h2><pre class="codeinput">display_kernels(thresh_dist);
+<span class="comment">%</span>
+</pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <h2 id="7">2.Bird Image</h2><pre class="codeinput">thresh_dist = 40;
 img = imread(<span class="string">'../data/bird.jpg'</span>);
 </pre><h2 id="8">Mask and Masked Images</h2><pre class="codeinput">mask = generate_bokeh_mask(img);
-</pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <h2 id="9">Contour Plot of Kernel radius</h2><pre class="codeinput">kr_img = get_kernel_radius(mask, thresh_dist);
-</pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <h2 id="10">Displaying kernels for different distances</h2><pre class="codeinput">display_kernels(thresh_dist);
-</pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2 id="11">Blurring the Background</h2><pre class="codeinput">[~] = mySpatiallyVaryingKernel(img, mask, kr_img);
+</pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <h2 id="9">Contour Plot of Kernel radius</h2><pre class="codeinput">kr_img = get_kernel_radius(mask, thresh_dist);
+</pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2 id="10">Blurring the Background</h2><pre class="codeinput">[~] = mySpatiallyVaryingKernel(img, mask, kr_img);
 toc;
-</pre><pre class="codeoutput">Elapsed time is 642.240313 seconds.
-</pre><img vspace="5" hspace="5" src="myMainScript_07.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+</pre><pre class="codeoutput">Elapsed time is 778.190354 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_07.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_08.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% MyMainScript
 close all;
@@ -100,13 +101,14 @@ mask = generate_bokeh_mask(img);
 %% Contour Plot of Kernel radius
 kr_img = get_kernel_radius(mask, thresh_dist);
 
-%% Displaying kernels for different distances
-% display_kernels(thresh_dist);
 
 %% Blurring the Background
 [~] = mySpatiallyVaryingKernel(img, mask, kr_img);
 
-%% 1.Bird Image
+%% Displaying kernels for different distances
+display_kernels(thresh_dist);
+% 
+%% 2.Bird Image
 thresh_dist = 40;
 img = imread('../data/bird.jpg');
 
@@ -115,9 +117,6 @@ mask = generate_bokeh_mask(img);
 
 %% Contour Plot of Kernel radius
 kr_img = get_kernel_radius(mask, thresh_dist);
-
-%% Displaying kernels for different distances
-display_kernels(thresh_dist);
 
 %% Blurring the Background
 [~] = mySpatiallyVaryingKernel(img, mask, kr_img);
