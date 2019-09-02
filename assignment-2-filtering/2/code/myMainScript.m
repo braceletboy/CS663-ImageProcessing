@@ -5,5 +5,6 @@ clc;
 tic;
 %% Your code here
 img = imread('../data/grass.png');
-[~] = myBilateralFiltering(img, 10, 10, 11);
+[~] = myBilateralFiltering(img, 10, 26, 3);
+%%
 toc;
