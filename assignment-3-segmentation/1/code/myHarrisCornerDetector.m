@@ -13,7 +13,5 @@ function corners = myHarrisCornerDetector(eig_min, eig_max, corn_k, threshold)
         end
     end
     
-    %% Thresholding
-%     corners(corners >= threshold) = 1;
-%     corners(corners < threshold) = 0;
+    corners = (corners > 0);
 end

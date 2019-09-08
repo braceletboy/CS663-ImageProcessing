@@ -66,55 +66,166 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Your code here</a></li><li><a href="#3">Derivative imgaes</a></li><li><a href="#4">Displaying images</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">tic;
-</pre><h2 id="2">Your code here</h2><pre class="codeinput">img_mat = load(<span class="string">'../data/boat.mat'</span>);
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Variable initializations</a></li><li><a href="#3">1st Gaussian Smoothing -- noise removal</a></li><li><a href="#4">Image derivatives along X and Y using Sobel operator</a></li><li><a href="#5">Eigen values of Structure Tensor</a></li><li><a href="#6">Harris corner-ness measure and displaying the corners</a></li><li><a href="#7">Reporting the parameters</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">close <span class="string">all</span>;
+clc;
+tic;
+</pre><h2 id="2">Variable initializations</h2><pre class="codeinput"><span class="comment">% Loaidng the input image</span>
+img_mat = load(<span class="string">'../data/boat.mat'</span>);
 img = double(img_mat.imageOrig);
-img = img/max(max(img));
-sigma1 = 10;
-sigma2 = 10;
-corn_k = 0.15;
-</pre><h2 id="3">Derivative imgaes</h2><pre class="codeinput">[Ix, Iy] = imgradientxy(img, <span class="string">'sobel'</span>);
+<span class="comment">% Shifting and rescaling</span>
+img = img - min(min(img));
+img = img / max(max(img));
+
+<span class="comment">% parameters to be tuned</span>
+sigma1 = 0.05;
+sigma2 = 0.55;
+corn_k = 0.183;
+threshlod = 0.007;
+window_size = 5;
+</pre><h2 id="3">1st Gaussian Smoothing -- noise removal</h2><pre class="codeinput">img = imgaussfilt(img, sigma1);
+</pre><h2 id="4">Image derivatives along X and Y using Sobel operator</h2><pre class="codeinput">[Ix, Iy] = imgradientxy(img, <span class="string">'sobel'</span>);
 figure(<span class="string">'name'</span>,<span class="string">'ImageDerivatives'</span>,<span class="string">'Position'</span>, [100 100 1200 400]);
 subplot(1,2,1),imshow(Ix);
 colormap(<span class="string">'gray'</span>);
-title(<span class="string">'Y - Derivative of img'</span>);
+title(<span class="string">'X - Derivative of img'</span>);
 subplot(1,2,2),imshow(Iy);
 colormap(<span class="string">'gray'</span>);
 title(<span class="string">'Y - Derivative of img'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="4">Displaying images</h2><pre class="codeinput">corners_img = myHarrisCornerDetector(img, sigma1, sigma2, corn_k);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="5">Eigen values of Structure Tensor</h2><pre class="codeinput">Ix2 = Ix.^2;
+Iy2 = Iy.^2;
+Ixy = Ix.*Iy;
+
+output_Ix2 = imgaussfilt(Ix2, sigma2, <span class="string">'Filtersize'</span>, window_size);
+output_Iy2 = imgaussfilt(Iy2, sigma2, <span class="string">'Filtersize'</span>, window_size);
+output_Ixy = imgaussfilt(Ixy, sigma2, <span class="string">'Filtersize'</span>, window_size);
+
+trace = output_Ix2 + output_Iy2;
+det = output_Ix2.*output_Iy2 - output_Ixy.^2;
+
+eig_min=(trace/2)-((trace/2).^2 - det).^(1/2);
+eig_max=(trace/2) +((trace/2).^2 - det).^(1/2);
+
+figure(<span class="string">'name'</span>,<span class="string">'Eigen Value Images'</span>,<span class="string">'Position'</span>, [100 100 1200 400]);
+subplot(1,2,1),imshow(eig_min/max(max(eig_min)));
+colorbar;
+colormap(<span class="string">'jet'</span>);
+title(<span class="string">'Eigen minimum'</span>);
+
+subplot(1,2,2),imshow(eig_max/max(max(eig_max)));
+colorbar;
+colormap(<span class="string">'jet'</span>);
+title(<span class="string">'Eigen maximum'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2 id="6">Harris corner-ness measure and displaying the corners</h2><pre class="codeinput">corners = myHarrisCornerDetector(eig_min, eig_max, corn_k, threshlod);
+
+
+<span class="comment">% Inserting markers</span>
+[rows, columns] = find(corners &gt; 0);
+marker_positions = cat(2, columns, rows);
+corners_marked = insertMarker(img, marker_positions, <span class="string">'color'</span>, <span class="string">'green'</span>, <span class="string">'Size'</span>, 3);
+
+figure(<span class="string">'name'</span>,<span class="string">'Corner-ness'</span>,<span class="string">'Position'</span>, [100 100 1200 400]);
+subplot(1,2,1),imshow(corners/max(max(corners)));
+colorbar;
+colormap(<span class="string">'gray'</span>);
+title(<span class="string">'corners'</span>);
+
+subplot(1,2,2),imshow(corners_marked);
+colorbar;
+colormap(<span class="string">'gray'</span>);
+title(<span class="string">'corners-marked'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="7">Reporting the parameters</h2><pre class="codeinput">fprintf(<span class="string">'std for smoothing(sigma1) is %f\n'</span>, sigma1);
+fprintf(<span class="string">'std for Ix, Iy(sigma2) is %f\n'</span>, sigma2);
+fprintf(<span class="string">'k value in corner-ness measure(k) is %f\n'</span>, corn_k);
 
 toc;
-</pre><pre class="codeoutput error">Output argument "corners_img" (and maybe others) not assigned during call to "myHarrisCornerDetector".
-
-Error in myMainScript (line 25)
-corners_img = myHarrisCornerDetector(img, sigma1, sigma2, corn_k);
+</pre><pre class="codeoutput">std for smoothing(sigma1) is 0.050000
+std for Ix, Iy(sigma2) is 0.550000
+k value in corner-ness measure(k) is 0.183000
+Elapsed time is 4.086073 seconds.
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% MyMainScript
-
+close all;
+clc;
 tic;
-%% Your code here
+%% Variable initializations
+
+% Loaidng the input image
 img_mat = load('../data/boat.mat');
 img = double(img_mat.imageOrig);
-img = img/max(max(img));
-sigma1 = 10;
-sigma2 = 10;
-corn_k = 0.15;
+% Shifting and rescaling
+img = img - min(min(img));
+img = img / max(max(img));
 
+% parameters to be tuned
+sigma1 = 0.05;
+sigma2 = 0.55;
+corn_k = 0.183;
+threshlod = 0.007;
+window_size = 5;
 
-%% Derivative imgaes
+%% 1st Gaussian Smoothing REPLACE_WITH_DASH_DASH noise removal
+img = imgaussfilt(img, sigma1);
+
+%% Image derivatives along X and Y using Sobel operator
 [Ix, Iy] = imgradientxy(img, 'sobel');
 figure('name','ImageDerivatives','Position', [100 100 1200 400]);
 subplot(1,2,1),imshow(Ix);
 colormap('gray');
-title('Y - Derivative of img');
+title('X - Derivative of img');
 subplot(1,2,2),imshow(Iy);
 colormap('gray');
 title('Y - Derivative of img');
-%% Displaying images
+%% Eigen values of Structure Tensor
+Ix2 = Ix.^2;
+Iy2 = Iy.^2;
+Ixy = Ix.*Iy;
+
+output_Ix2 = imgaussfilt(Ix2, sigma2, 'Filtersize', window_size);
+output_Iy2 = imgaussfilt(Iy2, sigma2, 'Filtersize', window_size);
+output_Ixy = imgaussfilt(Ixy, sigma2, 'Filtersize', window_size);
+
+trace = output_Ix2 + output_Iy2;
+det = output_Ix2.*output_Iy2 - output_Ixy.^2;
+
+eig_min=(trace/2)-((trace/2).^2 - det).^(1/2);
+eig_max=(trace/2) +((trace/2).^2 - det).^(1/2);
+
+figure('name','Eigen Value Images','Position', [100 100 1200 400]);
+subplot(1,2,1),imshow(eig_min/max(max(eig_min)));
+colorbar;
+colormap('jet');
+title('Eigen minimum');
+
+subplot(1,2,2),imshow(eig_max/max(max(eig_max)));
+colorbar;
+colormap('jet');
+title('Eigen maximum');
+
+%%  Harris corner-ness measure and displaying the corners
+corners = myHarrisCornerDetector(eig_min, eig_max, corn_k, threshlod);
 
 
-corners_img = myHarrisCornerDetector(img, sigma1, sigma2, corn_k);
+% Inserting markers
+[rows, columns] = find(corners > 0);
+marker_positions = cat(2, columns, rows);
+corners_marked = insertMarker(img, marker_positions, 'color', 'green', 'Size', 3);
+
+figure('name','Corner-ness','Position', [100 100 1200 400]);
+subplot(1,2,1),imshow(corners/max(max(corners)));
+colorbar;
+colormap('gray');
+title('corners');
+
+subplot(1,2,2),imshow(corners_marked);
+colorbar;
+colormap('gray');
+title('corners-marked');
+
+%% Reporting the parameters
+fprintf('std for smoothing(sigma1) is %f\n', sigma1);
+fprintf('std for Ix, Iy(sigma2) is %f\n', sigma2);
+fprintf('k value in corner-ness measure(k) is %f\n', corn_k);
 
 toc;
 
