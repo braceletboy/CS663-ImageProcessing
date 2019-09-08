@@ -45,9 +45,9 @@ function updated_feature_matrix = gradient_update(feature_matrix, ...
 %%
 %
 updated_feature_matrix = feature_matrix;
-[num_rows, num_columns, num_channels] = size(feature_matrix);
-[feature_matrix, fSeq] = fDim(feature_matrix, 3);
-knnsearch(feature_matrix, feature_matrix);
+% [num_rows, num_columns, num_channels] = size(feature_matrix);
+% [feature_matrix, fSeq] = fDim(feature_matrix, 3);
+% knnsearch(feature_matrix, feature_matrix);
 
 feature = feature_matrix(row, column, :);
 nearest_features = get_nearest_features(feature_matrix, feature,...
