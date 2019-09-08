@@ -1,5 +1,5 @@
 function segmented_img = myMeanShiftSegmentation(learning_rate, ...
-    bandwidth, num_iter, num_neighbours)
+    num_iter, space_sigma, intensity_sigma)
 %% Perform Mean Shift Segmentation
 %
 % SYNTAX:
@@ -12,9 +12,6 @@ function segmented_img = myMeanShiftSegmentation(learning_rate, ...
 %   num_neighbours = The number of neighbours for knnsearch used in the
 %   algo
 %
-% NOTE:
-%   We use custom matlab functions from the following source:
-%   https://in.mathworks.com/matlabcentral/fileexchange/37589-flatten-any-mulitdimensional-matrix-into-a-2-d-matrix
 %%
 %
 img = imread('../data/flower.png');
@@ -23,6 +20,7 @@ img = double(img);
 [num_rows, num_columns, num_channels] = size(img);
 updated_img = img;
 for iter=1:num_iter
+    tic;
     disp('Iter');
     feature_matrix = updated_img;
     row_coordinates = 1:num_rows;
@@ -32,44 +30,40 @@ for iter=1:num_iter
     feature_matrix(:,:, num_channels + 1) = row_coordinate_matrix;
     feature_matrix(:,:, num_channels + 2) = column_coordinate_matrix;
     updated_feature_matrix = gradient_update(feature_matrix, learning_rate, ...
-        bandwidth, num_neighbours);
+        space_sigma, intensity_sigma);
     updated_img = updated_feature_matrix(:,:,1:3);
+    toc;
 end
 segmented_img = updated_img;
 end
 
 function updated_feature_matrix = gradient_update(feature_matrix, ...
-    learning_rate, bandwidth, num_neighbours)
+    learning_rate, space_sigma, intensity_sigma)
 %% Perform gradient update on the given image.
 %
 %%
 %
 updated_feature_matrix = feature_matrix;
-[num_rows, num_columns, num_channels] = size(feature_matrix);
-[feature_matrix, fSeq] = fDim(feature_matrix, 3);
-knnsearch(feature_matrix, feature_matrix);
-
-feature = feature_matrix(row, column, :);
-nearest_features = get_nearest_features(feature_matrix, feature,...
-    num_neighbours);
-feature = transpose(squeeze(feature));
-feature_kernel_matrix = exp(sum((nearest_features - feature).^2,...
-    2)/bandwidth^2);
-gradient = (sum(bsxfun(@times, nearest_features, ...
-    feature_kernel_matrix)))/sum(feature_kernel_matrix) - feature;
-updated_feature_matrix(row,column, :) = feature + ...
-    learning_rate*gradient;
+[num_rows, num_columns, ~] = size(feature_matrix);
+for row=1:num_rows
+    for column=1:num_columns
+        window = 2*space_sigma;
+        top_row = max(1, row-window);
+        bottom_row = min(num_rows, row+window);
+        left_column = max(1, column-window);
+        right_column = min(num_columns, column+window);
+        feature = feature_matrix(row, column, :);
+        % we ignore feature outside row-2*sigma and row+2*sigma window
+        nearest_features = feature_matrix(top_row:bottom_row, ...
+            left_column:right_column, :);
+        space_diff = nearest_features(:,:,4:5) - feature(:,:,4:5);
+        intensity_diff = nearest_features(:,:,1:3) - feature(:,:,1:3);
+        kernel_matrix = exp(-1*sum(space_diff.^2, 3)/space_sigma^2 -...
+            sum(intensity_diff.^2, 3)/intensity_sigma^2);
+        gradient = (sum(sum(bsxfun(@times, nearest_features, ...
+            kernel_matrix),1),2))/sum(kernel_matrix, 'all') - feature;
+        updated_feature_matrix(row,column, :) = feature + ...
+            learning_rate*gradient;
+    end
 end
-
-function nearest_features = get_nearest_features(feature_matrix, ...
-    feature, num_neighbours)
-%% Return the nearest features to the given feature from the feature space.
-%
-%%
-%
-feature_matrix = permute(feature_matrix, [3 1 2]);
-feature_matrix = transpose(feature_matrix(:,:));
-feature = transpose(squeeze(feature));
-indices = knnsearch(feature_matrix, feature, 'K', num_neighbours);
-nearest_features = feature_matrix(indices, :);
 end
