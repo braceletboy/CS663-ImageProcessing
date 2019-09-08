@@ -3,10 +3,10 @@ close all;
 clc;
 tic;
 %% Parameters initialization
-h_c = 0.05;
-h_s = 10;
-iterations = 1;
-learning_rate = 0.9;
+learning_rate = 1;
+iterations = 11;
+h_s = 11;
+h_c = 11;
 %% Mean shift segmentation
 img = imread('../data/flower.png');
 segmented_img = myMeanShiftSegmentation(img, learning_rate, iterations, h_s, h_c);
