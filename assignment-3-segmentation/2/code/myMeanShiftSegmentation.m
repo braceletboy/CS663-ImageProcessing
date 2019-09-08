@@ -1,4 +1,4 @@
-function segmented_img = myMeanShiftSegmentation(learning_rate, ...
+function segmented_img = myMeanShiftSegmentation(img, learning_rate, ...
     num_iter, space_sigma, intensity_sigma)
 %% Perform Mean Shift Segmentation
 %
@@ -14,9 +14,8 @@ function segmented_img = myMeanShiftSegmentation(learning_rate, ...
 %
 %%
 %
-img = imread('../data/flower.png');
 img = double(img);
-%img = img(1:2:end, 1:2:end); % downsample
+img = img(1:2:end, 1:2:end, :); % downsample
 [num_rows, num_columns, num_channels] = size(img);
 updated_img = img;
 for iter=1:num_iter
@@ -34,7 +33,7 @@ for iter=1:num_iter
     updated_img = updated_feature_matrix(:,:,1:3);
     toc;
 end
-segmented_img = updated_img;
+segmented_img = uint8(updated_img);
 end
 
 function updated_feature_matrix = gradient_update(feature_matrix, ...

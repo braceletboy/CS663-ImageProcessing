@@ -1,22 +1,20 @@
 %% MyMainScript
-clear all;
 close all;
 clc;
 tic;
 %% Parameters initialization
-img = imread('../data/flower.png');
-
 h_c = 0.05;
 h_s = 10;
-iterations = 5;
+iterations = 1;
 learning_rate = 0.9;
 %% Mean shift segmentation
-segmented_img = myMeanShiftSegmentation(learning_rate, iterations, h_s, h_c);
+img = imread('../data/flower.png');
+segmented_img = myMeanShiftSegmentation(img, learning_rate, iterations, h_s, h_c);
 figure;
-subplot(1,2,1), imagesc(img);
+subplot(1,2,1), imshow(img);
 title('Original');
 colorbar;
-subplot(1,2,2), imagesc(uint8(segmented_img));
+subplot(1,2,2), imshow(segmented_img);
 title('Segmented');
 colorbar;
 
