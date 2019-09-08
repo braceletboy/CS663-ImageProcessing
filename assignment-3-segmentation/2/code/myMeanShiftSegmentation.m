@@ -19,8 +19,8 @@ img = img(1:2:end, 1:2:end, :); % downsample
 [num_rows, num_columns, num_channels] = size(img);
 updated_img = img;
 for iter=1:num_iter
-    tic;
-    disp('Iter');
+%     tic;
+%     disp('Iter');
     feature_matrix = updated_img;
     row_coordinates = 1:num_rows;
     row_coordinate_matrix = repmat(row_coordinates', 1, num_columns);
@@ -31,7 +31,7 @@ for iter=1:num_iter
     updated_feature_matrix = gradient_update(feature_matrix, learning_rate, ...
         space_sigma, intensity_sigma);
     updated_img = updated_feature_matrix(:,:,1:3);
-    toc;
+%     toc;
 end
 segmented_img = uint8(updated_img);
 end
