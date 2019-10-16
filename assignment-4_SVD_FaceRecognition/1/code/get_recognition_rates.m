@@ -22,6 +22,10 @@ function [recog_rates, k_vals] = get_recognition_rates(train_dataset, ...
 %
 %%
 %
+    dataset_mean = mean(train_dataset,2);
+    train_dataset = train_dataset - dataset_mean;
+    test_dataset = test_dataset - dataset_mean;
+    
     if strcmp(dataset_name, "ORL")
         k_vals = [1,2,3,5,10,15,20,30,50,75,100,150,170];
     elseif strcmp(dataset_name, "Yale")
