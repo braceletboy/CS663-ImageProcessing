@@ -15,15 +15,17 @@ function [train_dataset, test_dataset] = get_dataset(path, dataset_name)
 %%
 %
     if strcmp(dataset_name, "ORL")
-        image_shape = [92,110];
+        image_shape = [112,92];
         train_dataset = zeros(prod(image_shape),32*6);
         test_dataset = zeros(prod(image_shape), 32*4);
         for idx = 1:32
-            folder_path = sprintf('%ss%i/', path, idx);
+            folder_path = sprintf('%ss%i/*.pgm', path, idx);
             files = dir(folder_path);
             for jdx = 1:length(files)
-                image_path = sprintf('%s%s', folder_path, files(jdx).name);
+                image_path = sprintf('%ss%i/%s', path, idx, ...
+                                     files(jdx).name);
                 img = imread(image_path);
+                img = double(img)/255;
                 img_features = img(:);
                 if (jdx<=6)
                     train_dataset(:,(idx-1)*6+jdx) = img_features;
@@ -40,10 +42,11 @@ function [train_dataset, test_dataset] = get_dataset(path, dataset_name)
             if (idx==14)
                 continue
             end
-            folder_path = sprintf('%syaleB%02d/', path, idx);
+            folder_path = sprintf('%syaleB%02d/*.pgm', path, idx);
             files = dir(folder_path);
             for jdx = 1:length(files)
-                image_path = sprintf('%s%s', folder_path, files(jdx).name);
+                image_path = sprintf('%syaleB%02d/%s', path, idx, ...
+                    files(jdx).name);
                 img = imread(image_path);
                 img_features = img(:);
                 if (jdx<=40)

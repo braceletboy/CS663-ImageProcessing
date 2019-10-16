@@ -18,6 +18,10 @@ function eigen_matrix = get_eigen_matrix(train_dataset, svd_bool)
     train_dataset = train_dataset - dataset_mean;
     if (svd_bool)
         [eigen_matrix,~,~] = svd(train_dataset, 'econ');
+        %[eigen_matrix,S,~] = svd(train_dataset, 'econ');
+        %singular_values = diag(S);
+        %[~, sorted_indices] = sort(singular_values, 'descend');
+        %eigen_matrix(:,:) = eigen_matrix(:,sorted_indices);
     else
         L_matrix = (train_dataset'*train_dataset);
         [eigen_vectors, eigen_values] = eig(L_matrix, 'vector');
