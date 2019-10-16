@@ -1,0 +1,209 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-17"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Approach</a></li><li><a href="#3">Input data &amp; image database location paths</a></li><li><a href="#5">fasle positives/false negatives</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">clc;
+close <span class="string">all</span>;
+tic;
+</pre><h2 id="2">Approach</h2><p>Here we propose a solution based on thresholding the squared difference between eigen coefficents. We can solve the problem in 2 ways</p><pre class="codeinput"><span class="comment">% Method i) We can define(tune) the threshold such that squared difference of all</span>
+<span class="comment">% the internal test images(images of persons who are part of the training set) will be less</span>
+<span class="comment">% than or equal to threshold and that of the external test images(images of persons who are</span>
+<span class="comment">% not part of the training set) will be greater than threshold.</span>
+<span class="comment">% we can find this threshold by calculating the maximum of minimum squared</span>
+<span class="comment">% difference of all the internal test images.</span>
+
+<span class="comment">% Method ii) We can utilize the signficance of the false positives and false</span>
+<span class="comment">% negatives. false negatives occur with internal test images(because all</span>
+<span class="comment">% the internal test images ideally would result in a positive match),</span>
+<span class="comment">% whereas false positives occur with external test images(because all</span>
+<span class="comment">% the external test images ideally should result in a negative match).</span>
+<span class="comment">% hence if we can set the threshold such that the false positives are as</span>
+<span class="comment">% low as possible and false negatives are also considerably low(i.e, if the false negatives</span>
+<span class="comment">% are high in number implies the recognition rate is very poor)</span>
+
+<span class="comment">% Below we have implemented the (ii) second approach i.e, exploiting the</span>
+<span class="comment">% false positives/negatives.</span>
+<span class="comment">% we tuned the threshold and set it to 44 where we are getting 4 false</span>
+<span class="comment">% positives(compared to maximum value 80 ==&gt; ~5%) and 41 false negatives(compared</span>
+<span class="comment">% to maximum value 128 ==&gt; recognition rate ~ 70%) we can vary this further</span>
+<span class="comment">% as per our requirement.</span>
+</pre><h2 id="3">Input data &amp; image database location paths</h2><pre class="codeinput">orl_dir = <span class="string">'../../orl/'</span>; <span class="comment">% make sure that the path ends with '/'</span>
+threshold = 44;
+k = 24; <span class="comment">% top k eigen values</span>
+</pre><p>Step1: Generate datasets</p><pre class="codeinput">[orl_train_dataset, orl_test_dataset] = get_dataset(orl_dir, <span class="string">"ORL"</span>);
+internal_test_images = orl_test_dataset;
+external_test_images = get_external_images(orl_dir);
+x_bar = mean(orl_train_dataset, 2);
+
+<span class="comment">% Step2: Get Eigen matrix</span>
+orl_eigen_matrix = get_eigen_matrix(orl_train_dataset, true);
+
+V_hat = orl_eigen_matrix(:, 1:k);
+alphas_train = V_hat'*(orl_train_dataset-x_bar);
+
+alphas_internal_test = V_hat'*(internal_test_images - x_bar);
+alphas_external_test = V_hat'*(external_test_images - x_bar);
+</pre><h2 id="5">fasle positives/false negatives</h2><pre class="codeinput"><span class="comment">% calculating false negatives</span>
+false_negs = 0; <span class="comment">% max false negatives can be 32*4 = 128</span>
+<span class="keyword">for</span> i = 1 : size(internal_test_images, 2)
+    dist = sum((alphas_train - alphas_internal_test(:,i)).^2);
+    <span class="keyword">if</span>(min(dist) &gt; threshold)
+        false_negs = false_negs + 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% calculating false positives</span>
+false_pos = 0; <span class="comment">% max value can be 8*10 = 80</span>
+<span class="keyword">for</span> i = 1 : size(external_test_images, 2)
+    dist = sum((alphas_train - alphas_external_test(:,i)).^2);
+    <span class="keyword">if</span>(min(dist) &lt;= threshold)
+        false_pos = false_pos + 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Number of false positives are %d\n'</span>, false_pos);
+fprintf(<span class="string">'Number of false negatives are %d\n'</span>, false_negs);
+</pre><pre class="codeoutput">Number of false positives are 4
+Number of false negatives are 41
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MyMainScript
+clc;
+close all;
+tic;
+
+%% Approach
+% Here we propose a solution based on thresholding the squared difference
+% between eigen coefficents.
+% We can solve the problem in 2 ways 
+
+% Method i) We can define(tune) the threshold such that squared difference of all
+% the internal test images(images of persons who are part of the training set) will be less
+% than or equal to threshold and that of the external test images(images of persons who are
+% not part of the training set) will be greater than threshold.
+% we can find this threshold by calculating the maximum of minimum squared
+% difference of all the internal test images.
+
+% Method ii) We can utilize the signficance of the false positives and false
+% negatives. false negatives occur with internal test images(because all
+% the internal test images ideally would result in a positive match),
+% whereas false positives occur with external test images(because all
+% the external test images ideally should result in a negative match).
+% hence if we can set the threshold such that the false positives are as
+% low as possible and false negatives are also considerably low(i.e, if the false negatives
+% are high in number implies the recognition rate is very poor)
+
+% Below we have implemented the (ii) second approach i.e, exploiting the
+% false positives/negatives.
+% we tuned the threshold and set it to 44 where we are getting 4 false
+% positives(compared to maximum value 80 ==> ~5%) and 41 false negatives(compared
+% to maximum value 128 ==> recognition rate ~ 70%) we can vary this further
+% as per our requirement.
+%% Input data & image database location paths
+orl_dir = '../../orl/'; % make sure that the path ends with '/'
+threshold = 44;
+k = 24; % top k eigen values
+%% 
+% Step1: Generate datasets
+[orl_train_dataset, orl_test_dataset] = get_dataset(orl_dir, "ORL");
+internal_test_images = orl_test_dataset;
+external_test_images = get_external_images(orl_dir);
+x_bar = mean(orl_train_dataset, 2);
+
+% Step2: Get Eigen matrix
+orl_eigen_matrix = get_eigen_matrix(orl_train_dataset, true);
+
+V_hat = orl_eigen_matrix(:, 1:k);
+alphas_train = V_hat'*(orl_train_dataset-x_bar);
+
+alphas_internal_test = V_hat'*(internal_test_images - x_bar);
+alphas_external_test = V_hat'*(external_test_images - x_bar);
+%% fasle positives/false negatives
+
+% calculating false negatives
+false_negs = 0; % max false negatives can be 32*4 = 128
+for i = 1 : size(internal_test_images, 2)
+    dist = sum((alphas_train - alphas_internal_test(:,i)).^2);  
+    if(min(dist) > threshold)
+        false_negs = false_negs + 1;
+    end
+end
+
+% calculating false positives
+false_pos = 0; % max value can be 8*10 = 80
+for i = 1 : size(external_test_images, 2)
+    dist = sum((alphas_train - alphas_external_test(:,i)).^2);  
+    if(min(dist) <= threshold)
+        false_pos = false_pos + 1;
+    end
+end
+
+fprintf('Number of false positives are %d\n', false_pos);
+fprintf('Number of false negatives are %d\n', false_negs);
+
+##### SOURCE END #####
+--></body></html>
