@@ -6,7 +6,8 @@ function eigen_matrix = get_eigen_matrix(train_dataset, svd_bool)
 %
 % INPUTS:
 %   train_dataset = The train dataset.
-%   svd_bool = Whether to use 'svd' or 'eig' for eigen matrix calculation.
+%   svd_bool = Whether to use 'svd'(true) or 'eig'(false) for eigen matrix 
+%              calculation.
 %
 % OUTPUTS:
 %   eigen_matrix = The matrix of eigen values
