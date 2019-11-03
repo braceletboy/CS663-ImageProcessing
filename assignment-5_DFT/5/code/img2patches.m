@@ -14,12 +14,12 @@ function patch_matrix = img2patches(img)
 [num_rows, num_columns] = size(img);
 num_patches = (num_rows-6)*(num_columns-6);
 patch_matrix = zeros(49, num_patches);
-count = 0;
+count = 1;
 for row = 1:num_rows-6
     for column = 1:num_columns-6
         patch = img(row:row+6, column:column+6);
-        count = count + 1;
         patch_matrix(:,count) = patch(:);
+        count = count + 1;
     end
 end
 end

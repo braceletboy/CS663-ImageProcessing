@@ -1,0 +1,403 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-04"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Part-(a) [I] - Denoising without using windows for barbara256.png</a></li><li><a href="#3">Part-(a) [II] - Denoising without using windows for stream.png</a></li><li><a href="#4">Part-(b) [I] - Denoising without using windows for barbara256.png</a></li><li><a href="#5">Part-(b) [II] - Denoising without using windows for stream.png</a></li><li><a href="#6">Part-(c) - Bilateral Filtering for barbara256.png</a></li><li><a href="#7">Part-(d) [I] - Denoising without using windows for barbara256.png with Poisson Noise</a></li><li><a href="#8">Part-(d) [II] - Denoising without using windows for barbara256.png with Poisson Noise and Less Brightness</a></li><li><a href="#9">Part-(e) Clamping Values</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+clc;
+
+tic;
+</pre><h2 id="2">Part-(a) [I] - Denoising without using windows for barbara256.png</h2><pre class="codeinput">sigma = 20;
+img = double(imread(<span class="string">'../data/barbara256.png'</span>));
+[denoised_img, noisy_img, rmse] = myPCADenoising1(img, sigma);
+figure(<span class="string">'Name'</span>,<span class="string">'PCA Denoisation of Barbara'</span>, <span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for barbara256.png in Part-(a) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for barbara256.png in Part-(a) is: 0.03
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="3">Part-(a) [II] - Denoising without using windows for stream.png</h2><pre class="codeinput">sigma = 20;
+img = double(imread(<span class="string">'../data/stream.png'</span>));
+[denoised_img, noisy_img, rmse] = myPCADenoising1(img, sigma);
+figure(<span class="string">'Name'</span>,<span class="string">'PCA Denoisation of Stream'</span>, <span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (PCA Denoisation without windows)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for stream.png in Part-(a) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for stream.png in Part-(a) is: 0.03
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2 id="4">Part-(b) [I] - Denoising without using windows for barbara256.png</h2><pre class="codeinput">sigma = 20;
+num_similar_patches = 200;
+img = double(imread(<span class="string">'../data/barbara256.png'</span>));
+[denoised_img, noisy_img, rmse] = myPCADenoising2(img, sigma, <span class="keyword">...</span>
+                                                  num_similar_patches);
+figure(<span class="string">'Name'</span>,<span class="string">'Windowed PCA Denoisation of Barbara'</span>, <span class="string">'Position'</span>, <span class="keyword">...</span>
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (Windowed PCA Denoisation)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for barbara256.png in Part-(b) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for barbara256.png in Part-(b) is: 0.03
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="5">Part-(b) [II] - Denoising without using windows for stream.png</h2><pre class="codeinput">sigma = 20;
+num_similar_patches = 200;
+img = double(imread(<span class="string">'../data/stream.png'</span>));
+[denoised_img, noisy_img, rmse] = myPCADenoising2(img, sigma, <span class="keyword">...</span>
+                                                  num_similar_patches);
+figure(<span class="string">'Name'</span>,<span class="string">'Windowed PCA Denoisation of Stream'</span>, <span class="string">'Position'</span>, <span class="keyword">...</span>
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (Windowed PCA Denoisation)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for stream.png in Part-(b) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for stream.png in Part-(b) is: 0.02
+</pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <h2 id="6">Part-(c) - Bilateral Filtering for barbara256.png</h2><pre class="language-matlab">Compared <span class="string">to</span> <span class="string">the</span> <span class="string">Bilateral</span> <span class="string">filtering</span> <span class="string">approach</span> <span class="string">we</span> <span class="string">find</span> <span class="string">that</span> <span class="string">PCA</span> <span class="string">Denoising</span>
+with <span class="string">Windowing</span> <span class="string">is</span> <span class="string">far</span> <span class="string">superior.</span> <span class="string">This</span> <span class="string">is</span> <span class="string">shown</span> <span class="string">by</span> <span class="string">the</span> <span class="string">quality</span> <span class="string">of</span> <span class="string">the</span>
+denoised <span class="string">images</span> <span class="string">obtained</span> <span class="string">for</span> <span class="string">both</span> <span class="string">the</span> <span class="string">algorithms.</span>
+</pre><pre class="codeinput">sigma = 20;
+spatial_sigma = 1;
+intensity_sigma = 22;
+window_size = 57;
+img = double(imread(<span class="string">'../data/barbara256.png'</span>));
+[denoised_img, noisy_img, rmse] = myBilateralFiltering(img, sigma, <span class="keyword">...</span>
+                                                  spatial_sigma, <span class="keyword">...</span>
+                                                  intensity_sigma, <span class="keyword">...</span>
+                                                  window_size);
+figure(<span class="string">'Name'</span>,<span class="string">'Bilateral Filtering of Barbara'</span>, <span class="string">'Position'</span>, <span class="keyword">...</span>
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (Bilateral Filtering)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for barbara256.png in Part-(c) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for barbara256.png in Part-(c) is: 0.02
+</pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <h2 id="7">Part-(d) [I] - Denoising without using windows for barbara256.png with Poisson Noise</h2><pre class="codeinput">sigma = 1/4;
+num_similar_patches = 200;
+img = double(imread(<span class="string">'../data/barbara256.png'</span>));
+sq_img = sqrt(img + 3/8);
+[denoised_sq_img, noisy_img, rmse] = myPCADenoising2(sq_img, sigma, <span class="keyword">...</span>
+                                                  num_similar_patches);
+denoised_img = denoised_sq_img.^2 - 3/8;
+figure(<span class="string">'Name'</span>,<span class="string">'Windowed PCA Denoisation of Barbara(Poisson Distributed)'</span>,<span class="keyword">...</span>
+       <span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Poisson Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (Windowed PCA Denoisation)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for barbara256.png in Part-(d) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for barbara256.png in Part-(d) is: 0.03
+</pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2 id="8">Part-(d) [II] - Denoising without using windows for barbara256.png with Poisson Noise and Less Brightness</h2><pre class="codeinput">sigma = 1/4;
+num_similar_patches = 200;
+img = double(imread(<span class="string">'../data/barbara256.png'</span>))/20;
+sq_img = sqrt(img + 3/8);
+[denoised_sq_img, noisy_img, rmse] = myPCADenoising2(sq_img, sigma, <span class="keyword">...</span>
+                                                  num_similar_patches);
+denoised_img = denoised_sq_img.^2 - 3/8;
+figure(<span class="string">'Name'</span>,<span class="string">'Windowed PCA Denoisation of Barbara(Poisson Distributed and Less Brightness)'</span>,<span class="keyword">...</span>
+       <span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title(<span class="string">'Less Bright Original Image'</span>);
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title(<span class="string">'Less Bright Poisson Noisy Image'</span>);
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title(<span class="string">'Denoised Image (Windowed PCA Denoisation)'</span>);
+colorbar;
+fprintf(<span class="string">'The RMSE for less bringht barbara256.png in Part-(d) is: %.2f\n'</span>,rmse);
+</pre><pre class="codeoutput">The RMSE for less bringht barbara256.png in Part-(d) is: 0.03
+</pre><img vspace="5" hspace="5" src="myMainScript_07.png" alt=""> <h2 id="9">Part-(e) Clamping Values</h2><pre class="language-matlab">The <span class="string">weiner</span> <span class="string">update</span> <span class="string">rule</span> <span class="string">in</span> <span class="string">PCA</span> <span class="string">based</span> <span class="string">Denoising</span> <span class="string">is</span> <span class="string">a</span> <span class="string">statistical</span> <span class="string">update</span>
+rule. But, on <span class="string">the</span> <span class="string">other</span> <span class="string">hand</span> <span class="string">any</span> <span class="string">such</span> <span class="string">clamping</span> <span class="string">introduced</span> <span class="string">is</span> <span class="string">an</span>
+empirical <span class="string">one.</span> <span class="string">This</span> <span class="string">leads</span> <span class="string">to</span> <span class="string">the</span> <span class="string">PCA-based</span> <span class="string">filtering</span> <span class="string">technique</span> <span class="string">lose</span>
+it's theoretical <span class="string">footing.</span> <span class="string">I</span> <span class="string">think</span>, such <span class="string">a</span> <span class="string">clamping</span> <span class="string">of</span> <span class="string">values</span> <span class="string">not</span> <span class="string">a</span>
+correct <span class="string">approach.</span>
+</pre><pre class="codeinput">toc;
+</pre><pre class="codeoutput">Elapsed time is 1010.846116 seconds.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MyMainScript
+clear all;
+close all;
+clc;
+
+tic;
+%% Part-(a) [I] - Denoising without using windows for barbara256.png
+sigma = 20;
+img = double(imread('../data/barbara256.png'));
+[denoised_img, noisy_img, rmse] = myPCADenoising1(img, sigma);
+figure('Name','PCA Denoisation of Barbara', 'Position', [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image');
+colorbar;
+fprintf('The RMSE for barbara256.png in Part-(a) is: %.2f\n',rmse);
+%% Part-(a) [II] - Denoising without using windows for stream.png
+sigma = 20;
+img = double(imread('../data/stream.png'));
+[denoised_img, noisy_img, rmse] = myPCADenoising1(img, sigma);
+figure('Name','PCA Denoisation of Stream', 'Position', [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (PCA Denoisation without windows)');
+colorbar;
+fprintf('The RMSE for stream.png in Part-(a) is: %.2f\n',rmse);
+%% Part-(b) [I] - Denoising without using windows for barbara256.png
+sigma = 20;
+num_similar_patches = 200;
+img = double(imread('../data/barbara256.png'));
+[denoised_img, noisy_img, rmse] = myPCADenoising2(img, sigma, ...
+                                                  num_similar_patches);
+figure('Name','Windowed PCA Denoisation of Barbara', 'Position', ...
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (Windowed PCA Denoisation)');
+colorbar;
+fprintf('The RMSE for barbara256.png in Part-(b) is: %.2f\n',rmse);
+%% Part-(b) [II] - Denoising without using windows for stream.png
+sigma = 20;
+num_similar_patches = 200;
+img = double(imread('../data/stream.png'));
+[denoised_img, noisy_img, rmse] = myPCADenoising2(img, sigma, ...
+                                                  num_similar_patches);
+figure('Name','Windowed PCA Denoisation of Stream', 'Position', ...
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (Windowed PCA Denoisation)');
+colorbar;
+fprintf('The RMSE for stream.png in Part-(b) is: %.2f\n',rmse);
+%% Part-(c) - Bilateral Filtering for barbara256.png
+%   Compared to the Bilateral filtering approach we find that PCA Denoising
+%   with Windowing is far superior. This is shown by the quality of the
+%   denoised images obtained for both the algorithms.
+sigma = 20;
+spatial_sigma = 1;
+intensity_sigma = 22;
+window_size = 57;
+img = double(imread('../data/barbara256.png'));
+[denoised_img, noisy_img, rmse] = myBilateralFiltering(img, sigma, ...
+                                                  spatial_sigma, ...
+                                                  intensity_sigma, ...
+                                                  window_size);
+figure('Name','Bilateral Filtering of Barbara', 'Position', ...
+       [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (Bilateral Filtering)');
+colorbar;
+fprintf('The RMSE for barbara256.png in Part-(c) is: %.2f\n',rmse);
+%% Part-(d) [I] - Denoising without using windows for barbara256.png with Poisson Noise
+sigma = 1/4;
+num_similar_patches = 200;
+img = double(imread('../data/barbara256.png'));
+sq_img = sqrt(img + 3/8);
+[denoised_sq_img, noisy_img, rmse] = myPCADenoising2(sq_img, sigma, ...
+                                                  num_similar_patches);
+denoised_img = denoised_sq_img.^2 - 3/8;
+figure('Name','Windowed PCA Denoisation of Barbara(Poisson Distributed)',...
+       'Position', [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Poisson Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (Windowed PCA Denoisation)');
+colorbar;
+fprintf('The RMSE for barbara256.png in Part-(d) is: %.2f\n',rmse);
+%% Part-(d) [II] - Denoising without using windows for barbara256.png with Poisson Noise and Less Brightness
+sigma = 1/4;
+num_similar_patches = 200;
+img = double(imread('../data/barbara256.png'))/20;
+sq_img = sqrt(img + 3/8);
+[denoised_sq_img, noisy_img, rmse] = myPCADenoising2(sq_img, sigma, ...
+                                                  num_similar_patches);
+denoised_img = denoised_sq_img.^2 - 3/8;
+figure('Name','Windowed PCA Denoisation of Barbara(Poisson Distributed and Less Brightness)',...
+       'Position', [100 100 1200 1200]);
+subplot(1,3,1);
+imshow(img, [min(min(img)) max(max(img))]);
+title('Less Bright Original Image');
+colorbar;
+subplot(1,3,2);
+imshow(noisy_img, [min(min(noisy_img)) max(max(noisy_img))]);
+title('Less Bright Poisson Noisy Image');
+colorbar;
+subplot(1,3,3);
+imshow(denoised_img, [min(min(denoised_img)) max(max(denoised_img))]);
+title('Denoised Image (Windowed PCA Denoisation)');
+colorbar;
+fprintf('The RMSE for less bringht barbara256.png in Part-(d) is: %.2f\n',rmse);
+%% Part-(e) Clamping Values
+%   The weiner update rule in PCA based Denoising is a statistical update
+%   rule. But, on the other hand any such clamping introduced is an
+%   empirical one. This leads to the PCA-based filtering technique lose
+%   it's theoretical footing. I think, such a clamping of values not a
+%   correct approach.
+%%
+toc;
+
+##### SOURCE END #####
+--></body></html>
