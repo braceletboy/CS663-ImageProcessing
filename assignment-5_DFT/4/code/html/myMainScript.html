@@ -1,0 +1,234 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-03"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Low Pass Cutoff Filter</a></li><li><a href="#3">Low Pass Gaussian Filter</a></li><li><a href="#4">Comments</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+clc;
+tic;
+</pre><h2 id="2">Low Pass Cutoff Filter</h2><pre class="codeinput">img = double(imread(<span class="string">'../data/barbara256.png'</span>))/255;
+figure(<span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(2,3,1);
+imshow(img, [min(min(img)), max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+
+cutoff = 40;
+[filtered_img, lp_filter] = cutoff_filter(img, cutoff);
+subplot(2,3,2);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title(<span class="string">'Cutoff - 40'</span>);
+colorbar;
+
+lp_filt_fft_img_logabs = log(abs(fftshift(fft2(lp_filter))));
+subplot(2,3,3);
+imshow(lp_filt_fft_img_logabs, [min(min(lp_filt_fft_img_logabs)), <span class="keyword">...</span>
+                                max(max(lp_filt_fft_img_logabs))]);
+title(<span class="string">'Low Pass Filter FFT - 40'</span>)
+colorbar;
+
+cutoff = 80;
+[filtered_img, lp_filter] = cutoff_filter(img, cutoff);
+subplot(2,3,5);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title(<span class="string">'Cutoff - 80'</span>);
+colorbar;
+
+lp_filt_fft_img_logabs = log(abs(fftshift(fft2(lp_filter))));
+subplot(2,3,6);
+imshow(lp_filt_fft_img_logabs, [min(min(lp_filt_fft_img_logabs)), <span class="keyword">...</span>
+                                max(max(lp_filt_fft_img_logabs))]);
+title(<span class="string">'Low Pass Filter FFT - 80'</span>)
+colorbar;
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="3">Low Pass Gaussian Filter</h2><pre class="codeinput">figure(<span class="string">'Position'</span>, [100 100 1200 1200]);
+subplot(2,3,1);
+imshow(img, [min(min(img)), max(max(img))]);
+title(<span class="string">'Original Image'</span>);
+colorbar;
+
+sigma = 40;
+filtered_img = gaussian_filter(img, sigma);
+subplot(2,3,2);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title(<span class="string">'Sigma - 40'</span>);
+colorbar;
+
+gaussian_filter_img = fspecial(<span class="string">'gaussian'</span>, size(img), sigma);
+gauss_filt_fft_img_logabs = log(abs(fftshift(fft2(gaussian_filter_img))));
+subplot(2,3,3);
+imshow(gauss_filt_fft_img_logabs, [min(min(gauss_filt_fft_img_logabs)), <span class="keyword">...</span>
+                                   max(max(gauss_filt_fft_img_logabs))]);
+title(<span class="string">'Gaussian Filter FFT - 40'</span>);
+colorbar;
+
+sigma = 80;
+filtered_img = gaussian_filter(img, sigma);
+subplot(2,3,5);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title(<span class="string">'Sigma - 80'</span>);
+colorbar;
+
+gaussian_filter_img = fspecial(<span class="string">'gaussian'</span>, size(img), sigma);
+gauss_filt_fft_img_logabs = log(abs(fftshift(fft2(gaussian_filter_img))));
+subplot(2,3,6);
+imshow(gauss_filt_fft_img_logabs, [min(min(gauss_filt_fft_img_logabs)), <span class="keyword">...</span>
+                             max(max(gauss_filt_fft_img_logabs))]);
+title(<span class="string">'Gaussian Filter FFT - 80'</span>);
+colorbar;
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2 id="4">Comments</h2><p>Using the low pass cutoff filter results in the introduction of ringing phenomenon which can be seen especially on the left side of barbara where there is a smooth surface. On the other hand, gaussian low pass filtering doesn't result in such ringing. This is due to the fact that the sharp changes in the cutoff filter result in many stray frequencies that corrupt the original image.</p><pre class="codeinput">toc;
+</pre><pre class="codeoutput">Elapsed time is 8.776007 seconds.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MyMainScript
+clear all;
+close all;
+clc;
+tic;
+%% Low Pass Cutoff Filter
+%
+img = double(imread('../data/barbara256.png'))/255;
+figure('Position', [100 100 1200 1200]);
+subplot(2,3,1);
+imshow(img, [min(min(img)), max(max(img))]);
+title('Original Image');
+colorbar;
+
+cutoff = 40;
+[filtered_img, lp_filter] = cutoff_filter(img, cutoff);
+subplot(2,3,2);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title('Cutoff - 40');
+colorbar;
+
+lp_filt_fft_img_logabs = log(abs(fftshift(fft2(lp_filter))));
+subplot(2,3,3);
+imshow(lp_filt_fft_img_logabs, [min(min(lp_filt_fft_img_logabs)), ...
+                                max(max(lp_filt_fft_img_logabs))]);
+title('Low Pass Filter FFT - 40')
+colorbar;
+
+cutoff = 80;
+[filtered_img, lp_filter] = cutoff_filter(img, cutoff);
+subplot(2,3,5);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title('Cutoff - 80');
+colorbar;
+
+lp_filt_fft_img_logabs = log(abs(fftshift(fft2(lp_filter))));
+subplot(2,3,6);
+imshow(lp_filt_fft_img_logabs, [min(min(lp_filt_fft_img_logabs)), ...
+                                max(max(lp_filt_fft_img_logabs))]);
+title('Low Pass Filter FFT - 80')
+colorbar;
+%% Low Pass Gaussian Filter
+%
+figure('Position', [100 100 1200 1200]);
+subplot(2,3,1);
+imshow(img, [min(min(img)), max(max(img))]);
+title('Original Image');
+colorbar;
+
+sigma = 40;
+filtered_img = gaussian_filter(img, sigma);
+subplot(2,3,2);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title('Sigma - 40');
+colorbar;
+
+gaussian_filter_img = fspecial('gaussian', size(img), sigma);
+gauss_filt_fft_img_logabs = log(abs(fftshift(fft2(gaussian_filter_img))));
+subplot(2,3,3);
+imshow(gauss_filt_fft_img_logabs, [min(min(gauss_filt_fft_img_logabs)), ...
+                                   max(max(gauss_filt_fft_img_logabs))]);
+title('Gaussian Filter FFT - 40');
+colorbar;
+
+sigma = 80;
+filtered_img = gaussian_filter(img, sigma);
+subplot(2,3,5);
+imshow(filtered_img, [min(min(filtered_img)), max(max(filtered_img))]);
+title('Sigma - 80');
+colorbar;
+
+gaussian_filter_img = fspecial('gaussian', size(img), sigma);
+gauss_filt_fft_img_logabs = log(abs(fftshift(fft2(gaussian_filter_img))));
+subplot(2,3,6);
+imshow(gauss_filt_fft_img_logabs, [min(min(gauss_filt_fft_img_logabs)), ...
+                             max(max(gauss_filt_fft_img_logabs))]);
+title('Gaussian Filter FFT - 80');
+colorbar;
+%% Comments
+% Using the low pass cutoff filter results in the introduction of ringing
+% phenomenon which can be seen especially on the left side of barbara where
+% there is a smooth surface. On the other hand, gaussian low pass filtering
+% doesn't result in such ringing. This is due to the fact that the sharp
+% changes in the cutoff filter result in many stray frequencies that
+% corrupt the original image.
+toc;
+
+##### SOURCE END #####
+--></body></html>
