@@ -38,7 +38,7 @@ Repository containing our solutions for CS663-Digital Image Processing course As
 * Frequency Domain Image Filtering
 * FFT
 
-Contributors:  
+## Contributors:  
 * Rukmangadh Sai Myana ([@braceletboy][1])
 * Bandaru Sai Ganesh ([@bvsg363][2])
 * Gunti Dheeraj Kumar ([@deraklmc][3])
