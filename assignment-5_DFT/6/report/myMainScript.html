@@ -1,0 +1,248 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-04"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Creating Test Images</a></li><li><a href="#3">Algorithm</a></li><li><a href="#4">Handling Noisy images</a></li><li><a href="#5">Display results</a></li><li><a href="#6">Comments and review</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">close <span class="string">all</span>;
+clc;
+tic;
+</pre><h2 id="2">Creating Test Images</h2><p>Image I</p><pre class="codeinput">I = zeros(300, 300);
+I(50:50+69, 50:50+49) = 255;
+
+<span class="comment">% Image J - translated I (tx = -30; ty = 70)</span>
+J = zeros(300,300);
+J(120:120+69, 20:20+49)=255;
+</pre><h2 id="3">Algorithm</h2><p>Fourier transforms</p><pre class="codeinput">F_I = fftshift(fft2(I));
+F_J = fftshift(fft2(J));
+
+<span class="comment">% Cross Power Spectrum(CPS)</span>
+CPS = (F_I.*conj(F_J))./(1e-5 + abs(F_I).*abs(F_J));
+CPS_F = real(fft2(CPS)); <span class="comment">% fourier transform of CPS</span>
+log_CPS_F = log(abs(CPS_F));
+</pre><h2 id="4">Handling Noisy images</h2><pre class="codeinput">noisy_I = I + 20*randn(300);
+noisy_J = J + 20*randn(300);
+
+F_I_noisy = fftshift(fft2(noisy_I));
+F_J_noisy = fftshift(fft2(noisy_J));
+
+<span class="comment">% CPS</span>
+CPS_noisy = (F_I_noisy.*conj(F_J_noisy))./(1e-5 + abs(F_I_noisy).*abs(F_J_noisy));
+CPS_noisy_F = real(fft2(CPS_noisy));
+log_CPS_noisy_F = log(abs(CPS_noisy_F));
+</pre><h2 id="5">Display results</h2><pre class="codeinput">figure;
+imshowpair(I,J);
+title(<span class="string">'Images I and J'</span>)
+
+figure;
+imshowpair(noisy_I,noisy_J);
+title(<span class="string">'Noisy Images I and J'</span>)
+
+figure;
+imagesc(CPS_F, [min(min(CPS_F)), max(max(CPS_F))]);
+colormap(gray);
+colorbar;
+title(<span class="string">'Fourier Transform of Cross Power Spectrum'</span>)
+figure;
+imagesc(CPS_noisy_F, [min(min(CPS_noisy_F)), max(max(CPS_noisy_F))]);
+colormap(gray);
+colorbar;
+title(<span class="string">'Fourier Transform of Noisy Cross Power Spectrum'</span>)
+
+figure;
+imagesc(log_CPS_F);
+colormap(gray);
+colorbar;
+title(<span class="string">'Log of Fourier Transform of Cross Power Spectrum'</span>)
+figure;
+imagesc(log_CPS_noisy_F);
+colormap(gray);
+colorbar;
+title(<span class="string">'Log of Fourier Transform of Noisy Cross Power Spectrum'</span>)
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2 id="6">Comments and review</h2><pre class="codeinput"><span class="comment">% On Original Images______________</span>
+<span class="comment">% As discussed in the paper Cross Power Spectrum(CPS)-</span>
+<span class="comment">% CPS = exp{j2pi(u*x_o + v*y_o), as this is a constant function its FT would be a delta function centred at (x_o, y_o)</span>
+<span class="comment">% The predicted translation agrees with the ground truth</span>
+<span class="comment">% translation values --&gt; the FT of CPS is a black image with a single white point at [X Y] = [271 71].</span>
+<span class="comment">% This corresponds to a (x_o, y_o) = (270, 70) == (300-30, 70) == (-30, 70)</span>
+<span class="comment">% i.e, due to period nature of FT</span>
+<span class="comment">%</span>
+<span class="comment">% Noisy images_______________</span>
+<span class="comment">% When noise is added, there is alot of noise in the FT of</span>
+<span class="comment">% CPS and so it is hard to identify the delta (ie a single pixel). The</span>
+<span class="comment">% value at [X Y] = [271 71] is faintly visible and is still the location of max</span>
+<span class="comment">% value in the FT, but this is no longer true when noise levels are</span>
+<span class="comment">% increased.</span>
+
+<span class="comment">% Time Complexity________________</span>
+<span class="comment">% FFT-based image registration :: O(NlogN)</span>
+<span class="comment">% Pixel wise comparison :: O(N^2) --&gt; every pixel of the first image has to be compared to every pixel of the second image</span>
+
+<span class="comment">% Approach for Correcting rotation between two images______________________</span>
+<span class="comment">% Rotational movement can be deduced in a similar manner using the phase correlation by</span>
+<span class="comment">% representing the rotation as a translational displacement with polar coordinates.</span>
+<span class="comment">% M1(rho, theta) = M2(rho, theta - theta_0)</span>
+<span class="comment">% using phase correlation (as above implemention) angle theta_0 can be easily found out.</span>
+toc;
+</pre><pre class="codeoutput">Elapsed time is 8.281669 seconds.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MyMainScript
+close all;
+clc;
+tic;
+%% Creating Test Images
+% Image I
+I = zeros(300, 300);
+I(50:50+69, 50:50+49) = 255;
+
+% Image J - translated I (tx = -30; ty = 70)
+J = zeros(300,300);
+J(120:120+69, 20:20+49)=255;
+
+%% Algorithm
+% Fourier transforms
+F_I = fftshift(fft2(I));
+F_J = fftshift(fft2(J));
+
+% Cross Power Spectrum(CPS)
+CPS = (F_I.*conj(F_J))./(1e-5 + abs(F_I).*abs(F_J));
+CPS_F = real(fft2(CPS)); % fourier transform of CPS
+log_CPS_F = log(abs(CPS_F));
+
+%% Handling Noisy images
+
+noisy_I = I + 20*randn(300);
+noisy_J = J + 20*randn(300);
+
+F_I_noisy = fftshift(fft2(noisy_I));
+F_J_noisy = fftshift(fft2(noisy_J));
+
+% CPS
+CPS_noisy = (F_I_noisy.*conj(F_J_noisy))./(1e-5 + abs(F_I_noisy).*abs(F_J_noisy));
+CPS_noisy_F = real(fft2(CPS_noisy));
+log_CPS_noisy_F = log(abs(CPS_noisy_F));
+
+%% Display results
+figure;
+imshowpair(I,J);
+title('Images I and J')
+
+figure;
+imshowpair(noisy_I,noisy_J);
+title('Noisy Images I and J')
+
+figure;
+imagesc(CPS_F, [min(min(CPS_F)), max(max(CPS_F))]);
+colormap(gray);
+colorbar;
+title('Fourier Transform of Cross Power Spectrum')
+figure;
+imagesc(CPS_noisy_F, [min(min(CPS_noisy_F)), max(max(CPS_noisy_F))]);
+colormap(gray);
+colorbar;
+title('Fourier Transform of Noisy Cross Power Spectrum')
+
+figure;
+imagesc(log_CPS_F);
+colormap(gray);
+colorbar;
+title('Log of Fourier Transform of Cross Power Spectrum')
+figure;
+imagesc(log_CPS_noisy_F);
+colormap(gray);
+colorbar;
+title('Log of Fourier Transform of Noisy Cross Power Spectrum')
+
+%% Comments and review
+
+% On Original Images______________
+% As discussed in the paper Cross Power Spectrum(CPS)-
+% CPS = exp{j2pi(u*x_o + v*y_o), as this is a constant function its FT would be a delta function centred at (x_o, y_o)
+% The predicted translation agrees with the ground truth 
+% translation values REPLACE_WITH_DASH_DASH> the FT of CPS is a black image with a single white point at [X Y] = [271 71].
+% This corresponds to a (x_o, y_o) = (270, 70) == (300-30, 70) == (-30, 70)
+% i.e, due to period nature of FT
+%
+% Noisy images_______________
+% When noise is added, there is alot of noise in the FT of
+% CPS and so it is hard to identify the delta (ie a single pixel). The
+% value at [X Y] = [271 71] is faintly visible and is still the location of max
+% value in the FT, but this is no longer true when noise levels are
+% increased.
+
+% Time Complexity________________
+% FFT-based image registration :: O(NlogN)
+% Pixel wise comparison :: O(N^2) REPLACE_WITH_DASH_DASH> every pixel of the first image has to be compared to every pixel of the second image
+
+% Approach for Correcting rotation between two images______________________
+% Rotational movement can be deduced in a similar manner using the phase correlation by
+% representing the rotation as a translational displacement with polar coordinates.
+% M1(rho, theta) = M2(rho, theta - theta_0) 
+% using phase correlation (as above implemention) angle theta_0 can be easily found out.
+toc;
+
+##### SOURCE END #####
+--></body></html>
