@@ -1,5 +1,6 @@
-%texture_image = [1 2 3 5 6 7; 4 5 6 2 3 4; 7 8 10 3 4 5; 7 8 10 3 4 5; 4 5 6 2 3 4;1 2 3 5 6 7 ];
 function [blocks] = getSlices(texture_img,k)
+% non overlapping adjacent patches
+
 [m,n] = size(texture_img);
 blocks = [];
 for i = 1:k:m
