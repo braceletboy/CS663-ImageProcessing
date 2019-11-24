@@ -1,7 +1,7 @@
 
 function random_patch = getRandomPatchHorizon(left_overlap_patch, ...
-                                       patch_set, ...
-                                       threshold_factor)
+                                              patch_set, ...
+                                              threshold_factor)
 %% Return a random similar patch from the set of patches
 %
 % SYNTAX:
