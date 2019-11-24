@@ -1,11 +1,11 @@
-function [left_cut_region, min_path_ind, path_cost] = getMinCut(error_img)
-[m, n] = size(error_img);
+function [left_cut_region, min_path_ind, path_cost] = getMinCut(error_patch)
+[m, n] = size(error_patch);
 
 % finding all possible vertical path costs
 path_cost = zeros(m, n);
-path_cost(1,:) = error_img(1, :);
+path_cost(1,:) = error_patch(1, :);
 for row = 2 : m
-    path_cost(row, :) = min([inf, path_cost(row-1, 1:n-1); path_cost(row-1, :); path_cost(row-1, 2:n), inf] + error_img(row,:));
+    path_cost(row, :) = min([inf, path_cost(row-1, 1:n-1); path_cost(row-1, :); path_cost(row-1, 2:n), inf] + error_patch(row,:));
 end
 
 %findind the minimun path(indices) and left cut region
@@ -24,3 +24,4 @@ for row = m-1:-1:1
     left_cut_region(row, 1:curr_col-1) = 1;
 end
 min_path_ind = min_path_ind-1; % doing this becuase of 'inf' at both ends
+end

@@ -1,21 +1,112 @@
- clc;
- tic
+clear; 
+clc;
+tic;
  
  %% Inputs && parameters
-texture_image = [1 2 3 5 6 7; 4 5 6 2 3 4; 7 8 10 3 4 5; 7 8 10 3 4 67; 4 5 6 2 3 4;1 2 3 5 6 7 ];
-k = 3;
+input_image = imread('data/t8.png');
+texture_image = rgb2hsv(input_image);
+texture_image = texture_image(:,:,3);
+patch_size = 24; % patch size is a multiple of 6 and patches are square
+threshold_factor = 0.1;
+quilt_multiple = 32;
 
 %% Patches(blocks) extraction
-blocks = getSlices(texture_image,k);
-randomblock = getRandomBlock(blocks);
-%disp(randomblock);
+patch_set = getSlices(texture_image, patch_size);
+first_slice = patch_set(:, :, randi(size(patch_set, 3)));
+final_size = patch_size + 5/6*patch_size*(quilt_multiple-1);
+quilted_image = zeros(final_size);
+quilted_image(1:patch_size, 1:patch_size) = first_slice;
 
-
-%% Finding min cut boundary
-
-sample_boundary_img = [1, 3, 3; 5, 1, 3; 6, 5, 8];
-[left_cut_region, min_path_ind, path_cost] = getMinCut(sample_boundary_img);
-disp(left_cut_region);
-disp(path_cost);
+%% Raster Scan loop
+for raster_row = 1:(5/6*patch_size):final_size-1/6*(patch_size)
+    for raster_column = 1:(5/6*patch_size):final_size-1/6*(patch_size)
+        if raster_row==1 && raster_column==1
+            continue
+        
+        elseif raster_row==1
+            right_overlap_boundary = (raster_column - 1) + 1/6*patch_size;
+            left_overlap_patch = quilted_image(...
+                                    raster_row:raster_row+patch_size-1,...
+                                     raster_column:right_overlap_boundary);
+            right_patch = getRandomPatchHorizon(left_overlap_patch,...
+                                                patch_set,...
+                                                threshold_factor);
+            right_overlap_patch = right_patch(:,1:patch_size/6);
+            error_patch = getErrorPatch(left_overlap_patch,...
+                                        right_overlap_patch);
+            [boundary_cut, ~, ~] = getMinCut(error_patch);
+            merged_patch = getMergedHorizon(left_overlap_patch,...
+                right_overlap_patch, boundary_cut);
+            quilted_image(raster_row:raster_row+patch_size-1,...
+                raster_column:right_overlap_boundary) = merged_patch;
+            quilted_image(raster_row:raster_row+patch_size-1,...
+                right_overlap_boundary+1:right_overlap_boundary+...
+                5/6*patch_size) = right_patch(:,patch_size/6+1:end);
+       
+        elseif raster_column==1
+            bottom_overlap_boundary = (raster_row - 1) + 1/6*patch_size;
+            top_overlap_patch = quilted_image(...
+                              raster_row:bottom_overlap_boundary,...
+                              raster_column:raster_column+patch_size-1);
+            bottom_patch = getRandomPatchVertical(top_overlap_patch,...
+                                                  patch_set,...
+                                                  threshold_factor);
+            bottom_overlap_patch = bottom_patch(1:patch_size/6,:);
+            error_patch = getErrorPatch(bottom_overlap_patch, ...
+                                        top_overlap_patch);
+            [boundary_cut, ~, ~] = getMinCut(transpose(error_patch));
+            merged_patch = getMergedVertical(top_overlap_patch, ...
+                bottom_overlap_patch, transpose(boundary_cut));
+            quilted_image(raster_row:bottom_overlap_boundary, ...
+                raster_column:raster_column+patch_size-1) = merged_patch;
+            quilted_image(bottom_overlap_boundary+1:...
+                bottom_overlap_boundary+5/6*patch_size, ...
+                raster_column:raster_column+patch_size-1) = ...
+                                        bottom_patch(patch_size/6+1:end,:);
+        else
+            right_overlap_boundary = (raster_column - 1) + 1/6*patch_size;
+            left_overlap_patch = quilted_image(...
+                                    raster_row:raster_row+patch_size-1,...
+                                     raster_column:right_overlap_boundary);
+            right_patch = getRandomPatchHorizon(left_overlap_patch,...
+                                                patch_set,...
+                                                threshold_factor);
+            right_overlap_patch = right_patch(:,1:patch_size/6);
+            error_patch = getErrorPatch(left_overlap_patch,...
+                                        right_overlap_patch);
+            [boundary_cut, ~, ~] = getMinCut(error_patch);
+            merged_patch = getMergedHorizon(left_overlap_patch,...
+                right_overlap_patch, boundary_cut);
+            quilted_image(raster_row:raster_row+patch_size-1,...
+                raster_column:right_overlap_boundary) = merged_patch;
+            quilted_image(raster_row:raster_row+patch_size-1,...
+                right_overlap_boundary+1:right_overlap_boundary+...
+                5/6*patch_size) = right_patch(:,patch_size/6+1:end);
+            
+              bottom_overlap_boundary = (raster_row - 1) + 1/6*patch_size;
+            top_overlap_patch = quilted_image(...
+                              raster_row:bottom_overlap_boundary,...
+                              raster_column:raster_column+patch_size-1);
+            bottom_patch = getRandomPatchVertical(top_overlap_patch,...
+                                                  patch_set,...
+                                                  threshold_factor);
+            bottom_overlap_patch = bottom_patch(1:patch_size/6,:);
+            error_patch = getErrorPatch(bottom_overlap_patch, ...
+                                        top_overlap_patch);
+            [boundary_cut, ~, ~] = getMinCut(transpose(error_patch));
+            merged_patch = getMergedVertical(top_overlap_patch, ...
+                bottom_overlap_patch, transpose(boundary_cut));
+            quilted_image(raster_row:bottom_overlap_boundary, ...
+                raster_column:raster_column+patch_size-1) = merged_patch;
+            quilted_image(bottom_overlap_boundary+1:...
+                bottom_overlap_boundary+5/6*patch_size, ...
+                raster_column:raster_column+patch_size-1) = ...
+                                        bottom_patch(patch_size/6+1:end,:);
+            
+        end
+        
+    end
+end
+imshow(quilted_image);
 
 toc
