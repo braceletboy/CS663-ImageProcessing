@@ -5,10 +5,13 @@ function [left_cut_region, min_path_ind, path_cost] = getMinCut(error_patch)
 path_cost = zeros(m, n);
 path_cost(1,:) = error_patch(1, :);
 for row = 2 : m
-    path_cost(row, :) = min([inf, path_cost(row-1, 1:n-1); path_cost(row-1, :); path_cost(row-1, 2:n), inf] + error_patch(row,:));
+    path_cost(row, :) = min([inf, path_cost(row-1, 1:n-1);...
+                             path_cost(row-1, :);...
+                             path_cost(row-1, 2:n), inf]...
+                             + error_patch(row,:));
 end
 
-%findind the minimun path(indices) and left cut region
+% findind the minimun path(indices) and left cut region
 min_path_ind = zeros(1, m);
 new_E = [inf(m, 1), path_cost, inf(m, 1)];
 ind_arr = find(new_E(m,:) == min(new_E(m, :)));
