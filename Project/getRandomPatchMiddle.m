@@ -1,7 +1,6 @@
-
-function random_patch = getRandomPatchVertical(top_overlap_patch, ...
-                                               patch_set, ...
-                                               threshold_factor)
+function random_patch = getRandomPatchMiddle(overlap_patch, ...
+                                       patch_set, ...
+                                       threshold_factor)
 %% Return a random similar patch from the set of patches
 %
 % SYNTAX:
@@ -16,15 +15,14 @@ function random_patch = getRandomPatchVertical(top_overlap_patch, ...
 %
 %%
 %
-top_overlap_patch = transpose(top_overlap_patch);
 num_blocks = size(patch_set, 3);
-[~, overlap_size] = size(top_overlap_patch);
+[~, overlap_size] = size(overlap_patch);
 overlap_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, idx);
-    current_patch = transpose(current_patch);
-    overlap_errors(idx) = sum((current_patch(:,1:overlap_size) - ...
-                                 top_overlap_patch).^2,'all');
+    current_patch((1/6)*overlap_size+1:overlap_size,(1/6)*overlap_size+1:overlap_size) = 0;
+    overlap_errors(idx) = sum((current_patch - ...
+                                 overlap_patch).^2,'all');
 end
 min_error = min(overlap_errors);
 [row_idxs, ~] = find(overlap_errors<(1+threshold_factor)*min_error);

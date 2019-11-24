@@ -21,8 +21,8 @@ num_blocks = size(patch_set, 3);
 overlap_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, idx);
-    overlap_errors(idx) = sumsqr(current_patch(:,1:overlap_size) - ...
-                                 left_overlap_patch);
+    overlap_errors(idx) = sum((current_patch(:,1:overlap_size) - ...
+                                 left_overlap_patch).^2,'all');
 end
 min_error = min(overlap_errors);
 [row_idxs, ~] = find(overlap_errors<(1+threshold_factor)*min_error);
