@@ -25,7 +25,7 @@ for idx = 1:num_blocks
                                  left_overlap_patch).^2,'all');
 end
 min_error = min(overlap_errors);
-[row_idxs, ~] = find(overlap_errors<(1+threshold_factor)*min_error);
+[row_idxs, ~] = find(overlap_errors <=(1+threshold_factor)*min_error);
 idx = datasample(row_idxs, 1);
 random_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
 end
