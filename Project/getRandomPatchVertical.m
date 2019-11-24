@@ -16,13 +16,11 @@ function random_patch = getRandomPatchVertical(top_overlap_patch, ...
 %
 %%
 %
-% top_overlap_patch = permute(top_overlap_patch, [2, 1, 3]);
 num_blocks = size(patch_set, 3)/3;
 [overlap_size, ~, ~] = size(top_overlap_patch);
 overlap_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
-%     current_patch = transpose(current_patch);
     overlap_errors(idx) = sum((current_patch(1:overlap_size, :, :) - ...
                                  top_overlap_patch).^2,'all');
 end

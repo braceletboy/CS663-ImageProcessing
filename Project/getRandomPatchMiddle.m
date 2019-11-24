@@ -16,11 +16,11 @@ function random_patch = getRandomPatchMiddle(overlap_patch, ...
 %%
 %
 num_blocks = size(patch_set, 3)/3;
-[~, overlap_size, ~] = size(overlap_patch);
+[~, patch_size, ~] = size(overlap_patch);
 overlap_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
-    current_patch((1/6)*overlap_size+1:overlap_size,(1/6)*overlap_size+1:overlap_size, :) = 0;
+    current_patch((1/6)*patch_size+1:patch_size,(1/6)*patch_size+1:patch_size, :) = 0;
     overlap_errors(idx) = sum((current_patch - ...
                                  overlap_patch).^2,'all');
 end
