@@ -2,7 +2,7 @@ function random_patch = getTransferRandomPatchMiddle(overlap_patch,...
                                                      target_patch,...
                                                      patch_set,...
                                                      threshold_factor,...
-                                                     alpha)
+                                                     alpha,overlap_factor)
 %%
 %
 %%
@@ -14,7 +14,7 @@ correspondence_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
     correspondence_errors(idx) = sumsqr(current_patch - target_patch);
-    current_patch((1/6)*patch_size+1:patch_size,(1/6)*patch_size+1:patch_size, :) = 0;
+    current_patch(int64(overlap_factor*patch_size)+1:patch_size,int64(overlap_factor*patch_size)+1:patch_size, :) = 0;
     overlap_errors(idx) = sum((current_patch - ...
                                  overlap_patch).^2,'all');
 end

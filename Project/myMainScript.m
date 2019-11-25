@@ -4,7 +4,7 @@ tic;
 %% Image Quilting
 %
 % Inputs && parameters
-input_image = im2double(imread('data/t4.png'));
+input_image = im2double(imread('data/t19.png'));
 is_grey = 0;
 if(length(size(input_image )) ~= 3)
     is_grey = 1;
@@ -13,8 +13,8 @@ end
 
 % patch size*overlap_factor must be an integer and patches are square
 
-overlap_factor = 1/4;
-patch_size = 24; 
+overlap_factor = 1/5;
+patch_size = 30; 
 quilt_multiple = 20;
 
 threshold_factor = 0.1;
@@ -42,11 +42,12 @@ end
 target_image = target_image(1:216, 1:216, :);
 
 % Inputs and Parameters
+overlap_factor = 1/3;
 patch_size = 36;
 threshold_factor = 0.1;
 num_iters = 2;
 alpha = 0.6;
 transfer_image = texture_transfer(texture_image, target_image,...
-                                  patch_size, threshold_factor, num_iters);
+                                  patch_size, threshold_factor, num_iters,overlap_factor);
 imshow(transfer_image);
 toc

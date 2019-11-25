@@ -1,6 +1,6 @@
 function transfer_image = texture_transfer(texture_image, target_image,...
                                            patch_size, threshold_factor,...
-                                           num_iters)
+                                           num_iters,overlap_factor)
 %%
 %
 %%
@@ -20,7 +20,7 @@ for iter=1:num_iters
     end
     output_image = transfer_quilting(texture_image, input_image,...
                                      patch_size, threshold_factor,...
-                                     quilt_multiple, alpha);
+                                     quilt_multiple, alpha,overlap_factor);
     patch_size = int64(patch_size/2);
     input_image = output_image;
     fprintf("Iteration No: %i .........DONE\n", iter);
