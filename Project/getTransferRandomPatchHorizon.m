@@ -19,7 +19,17 @@ for idx = 1:num_blocks
 end
 overall_errors = alpha*correspondence_errors + (1-alpha)*overlap_errors;
 min_error = min(overall_errors);
-[row_idxs, ~] = find(overall_errors<(1+threshold_factor)*min_error);
+% disp(size(overlap_errors));
+% disp(overlap_errors);
+% disp(size(correspondence_errors));
+% disp(correspondence_errors);
+% 
+% % disp(alpha*correspondence_errors)
+% disp(alpha);
+% disp("iji");
+
+% disp((1-alpha)*overlap_errors);
+[row_idxs, ~] = find(overall_errors <= (1+threshold_factor)*min_error);
 idx = datasample(row_idxs, 1);
 random_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
 end
