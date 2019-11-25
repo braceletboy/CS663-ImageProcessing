@@ -1,6 +1,6 @@
 function random_patch = getRandomPatchMiddle(overlap_patch, ...
                                              patch_set, ...
-                                             threshold_factor)
+                                             threshold_factor,overlap_factor)
 %% Return a random similar patch from the set of patches
 %
 % SYNTAX:
@@ -20,7 +20,7 @@ num_blocks = size(patch_set, 3)/3;
 overlap_errors = zeros(num_blocks, 1); % column matrix
 for idx = 1:num_blocks
     current_patch = patch_set(:, :, (idx-1)*3+1:(idx-1)*3+3);
-    current_patch((1/6)*patch_size+1:patch_size,(1/6)*patch_size+1:patch_size, :) = 0;
+    current_patch((overlap_factor)*patch_size+1:patch_size,(overlap_factor)*patch_size+1:patch_size, :) = 0;
     overlap_errors(idx) = sum((current_patch - ...
                                  overlap_patch).^2,'all');
 end
